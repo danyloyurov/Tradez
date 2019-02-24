@@ -55,6 +55,7 @@ trading_platforms/kraken/include)
 
 set(SOURCES
 main.cpp
+trading/bot/source/trading_platform_observer.cpp
 trading_platforms/kraken/source/kraken.cpp)
 
 include_directories(${DIRS})
