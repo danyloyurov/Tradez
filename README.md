@@ -1,0 +1,2 @@
+# Tradez
+Cryptocurrency trading bot
