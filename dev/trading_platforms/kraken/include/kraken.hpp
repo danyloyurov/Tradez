@@ -20,8 +20,8 @@ class KrakenPlatform : public ITradingPlatform {
         virtual error::TradingError GetClosedOrders(const std::vector<trading::id_t>& orders, std::vector<trading::id_t>& closed_orders) final;
         virtual error::TradingError GetOrderVolume(const trading::id_t& id, trading::volume_t& remaining_volume) final;
     private:
-        Kraken::KClient kraken_client;
-        std::vector<Kraken::KTrade> pair_dump;
+        Kraken::KClient kraken_client_;
+        std::vector<Kraken::KTrade> pair_dump_;
 
 };
 
