@@ -45,16 +45,17 @@ set_target_properties (libjson PROPERTIES COMPILE_DEFINITIONS_DEBUG "JSON_DEBUG;
 list (APPEND LIBS libjson)
 
 set(DIRS
-common/
+common/api
+common/utilities/include
 external_lib/kraken/
 external_lib/krakenlibjson/
-trading/api/
 trading/bot/include/
 trading_platforms/common
 trading_platforms/kraken/include)
 
 set(SOURCES
 main.cpp
+common/utilities/source/multipurpose_converter.cpp
 trading/bot/source/trading_platform_observer.cpp
 trading_platforms/kraken/source/kraken.cpp)
 

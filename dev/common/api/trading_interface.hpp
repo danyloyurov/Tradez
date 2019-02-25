@@ -5,6 +5,10 @@
 
 namespace trading {
 
+static const int kMaxUSDPairsCount = 5;
+static const int kMaxEURPairsCount = 5;
+static const int kMaxXBTPairsCount = 5;
+
 typedef double price_t;
 typedef double volume_t;
 typedef std::string id_t;
