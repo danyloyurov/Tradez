@@ -252,7 +252,7 @@ error::TradingError KrakenPlatform::GetAccountBalance(const trading::currecy_t& 
     }
 }
 
-error::TradingError KrakenPlatform::GetClosedOrders(const std::vector<trading::id_t>& orders, std::vector<trading::id_t>& closed_orders) {
+error::TradingError KrakenPlatform::GetClosedOrders(std::vector<trading::id_t>& closed_orders) {
     try {
         Kraken::KInput input_closed_orders;
         input_closed_orders["ofs"] = "0";
@@ -265,13 +265,9 @@ error::TradingError KrakenPlatform::GetClosedOrders(const std::vector<trading::i
         std::smatch match;
         std::regex ebat ("[0-9A-Z]{6}[-]{1}[0-9A-Z]{5}[-]{1}[0-9A-Z]{6}");
 
-        while (std::regex_search (response, match, ebat)) {
-            for (auto& order : orders) {
-                for(auto& closed_orded : match) {
-                    if(order == closed_orded) {
-                        closed_orders.push_back(closed_orded);
-                    }
-                }
+        while(std::regex_search (response, match, ebat)) {
+            for(auto& closed_orded : match) {
+                closed_orders.push_back(closed_orded);
             }
 
             response = match.suffix().str();
