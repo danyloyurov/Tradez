@@ -12,7 +12,7 @@ int main() {
 
     std::shared_ptr<ITradingPlatform> trading_platform = std::make_shared<KrakenPlatform>(kPublicKey, kPrivateKey);
 
-    TradingPlatformSubject trading_platform_observer(trading_platform);
+    TradingPlatformObserver trading_platform_observer(trading_platform);
     Trader trader(trading_platform);
 
     trading_platform_observer.SubsctibeObserver(std::make_shared<Trader>(trader));

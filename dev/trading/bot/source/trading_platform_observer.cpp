@@ -2,28 +2,28 @@
 
 #include <iostream>
 
-TradingPlatformSubject::TradingPlatformSubject(std::shared_ptr<ITradingPlatform> trading_platform)
+TradingPlatformObserver::TradingPlatformObserver(std::shared_ptr<ITradingPlatform> trading_platform)
     : trading_platform_(trading_platform) {
 
 }
 
-void TradingPlatformSubject::PeekEvents() {
+void TradingPlatformObserver::PeekEvents() {
     error::TradingError error_code = error::SUCCESS;
 
-    error_code = trading_platform_->GetClosedOrders(closed_orders_);
+    error_code = PeekEvents(ClosedOrderTag);
 
     if(error::FAILED == error_code) {
-        std::cout << "[TradingPlatformSubject] -> PeekEvents() -> Unable to peek closed orders" << std::endl;
+        std::cout << "[TradingPlatformObserver] -> PeekEvents() -> Unable to peek closed orders" << std::endl;
     }
 
-    error_code = trading_platform_->GetAssetPairs(available_asset_pairs_);
+    error_code = PeekEvents(AssetPairTag);
 
     if(error::FAILED == error_code) {
-        std::cout << "[TradingPlatformSubject] -> PeekEvents() -> Unable to peek asset pairs" << std::endl;
+        std::cout << "[TradingPlatformObserver] -> PeekEvents() -> Unable to peek asset pairs" << std::endl;
     }
 }
 
-void TradingPlatformSubject::DispatchEvents() {
+void TradingPlatformObserver::DispatchEvents() {
     if(true == subscribers_.empty()) {
         return;
     }
@@ -45,28 +45,68 @@ void TradingPlatformSubject::DispatchEvents() {
         }
     }
 
-    for(auto& item : available_asset_pairs_) {
-        BroadcastEvent(item, PairFoundTag);
+    for(auto& item : high_margin_asset_pairs_) {
+        BroadcastEvent(item, AssetPairTag);
     }
 
     cached_closed_orders_ = closed_orders_;
 
     closed_orders_.clear();
-    available_asset_pairs_.clear();
+    high_margin_asset_pairs_.clear();
 }
 
-void TradingPlatformSubject::SubsctibeObserver(std::shared_ptr<ITradingPlatformObserver> subscriber) {
+void TradingPlatformObserver::SubsctibeObserver(std::shared_ptr<ITradingPlatformObserver> subscriber) {
     subscribers_.push_back(subscriber);
 }
 
-void TradingPlatformSubject::BroadcastEvent(const trading::id_t& order_ID, ClosedOrder) {
+void TradingPlatformObserver::BroadcastEvent(const trading::id_t& order_ID, ClosedOrder) {
     for(auto& item : subscribers_) {
         item->NotifyOrderClosed(order_ID);
     }
 }
 
-void TradingPlatformSubject::BroadcastEvent(const trading::pair_t& asset_pair, PairFound) {
+void TradingPlatformObserver::BroadcastEvent(const trading::pair_t& asset_pair, AssetPair) {
     for(auto& item : subscribers_) {
         item->NotifyPairFound(asset_pair);
     }
+}
+
+error::TradingError TradingPlatformObserver::PeekEvents(ClosedOrder) {
+    error::TradingError error_code = error::SUCCESS;
+
+    error_code = trading_platform_->GetClosedOrders(closed_orders_);
+
+    return error_code;
+}
+
+error::TradingError TradingPlatformObserver::PeekEvents(AssetPair) {
+    const int kTimePeriod = 7200; /*seconds*/
+    const double kMarginPassRate = 2.0;
+
+    error::TradingError error_code = error::SUCCESS;
+
+    if(true == all_asset_pairs_.empty()) {
+        error_code = trading_platform_->GetAssetPairs(all_asset_pairs_);
+
+        if(error::FAILED == error_code) {
+            all_asset_pairs_.clear();
+            return error_code;
+        }
+    }
+
+    for(auto& pair : all_asset_pairs_) {
+        trading::price_t margin = 0.0;
+
+        error_code = trading_platform_->GetCurrecyMargin(pair, kTimePeriod, margin);
+
+        if(error::FAILED == error_code) {
+            return error_code;
+        }
+
+        if(kMarginPassRate <= margin) {
+            high_margin_asset_pairs_.push_back(pair);
+            std::cout << pair << " = " << margin << std::endl;
+        }
+    }
+
 }

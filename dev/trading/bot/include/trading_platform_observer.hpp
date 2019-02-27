@@ -14,24 +14,27 @@ class ITradingPlatformObserver {
         virtual void NotifyPairFound(const trading::pair_t& asset_pair) = 0;
 };
 
-class TradingPlatformSubject {
+class TradingPlatformObserver {
     public:
-        TradingPlatformSubject(std::shared_ptr<ITradingPlatform> trading_platform);
+        TradingPlatformObserver(std::shared_ptr<ITradingPlatform> trading_platform);
         void PeekEvents();
         void DispatchEvents();
 
         void SubsctibeObserver(std::shared_ptr<ITradingPlatformObserver> subscriber);
     private:
         static struct ClosedOrder {} ClosedOrderTag;
-        static struct PairFound {} PairFoundTag;
+        static struct AssetPair {} AssetPairTag;
 
+        error::TradingError PeekEvents(ClosedOrder);
+        error::TradingError PeekEvents(AssetPair);
         void BroadcastEvent(const trading::id_t& order_ID, ClosedOrder);
-        void BroadcastEvent(const trading::pair_t& asset_pair, PairFound);
+        void BroadcastEvent(const trading::pair_t& asset_pair, AssetPair);
 
         std::list<std::shared_ptr<ITradingPlatformObserver>> subscribers_;
         std::vector<trading::id_t> closed_orders_;
         std::vector<trading::id_t> cached_closed_orders_;
-        std::vector<trading::pair_t> available_asset_pairs_;
+        std::vector<trading::pair_t> high_margin_asset_pairs_;
+        std::vector<trading::pair_t> all_asset_pairs_;
         std::shared_ptr<ITradingPlatform> trading_platform_;
 };
 
