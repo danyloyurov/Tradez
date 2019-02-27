@@ -3,6 +3,7 @@
 
 #include "trading_platform_observer.hpp"
 #include "trading_platform.hpp"
+#include "asset_pair_handler.hpp"
 
 class Trader : public ITradingPlatformObserver {
     public:
@@ -12,6 +13,7 @@ class Trader : public ITradingPlatformObserver {
         virtual void NotifyOrderClosed(const trading::id_t& order_ID);
         virtual void NotifyPairFound(const trading::pair_t& asset_pair);
     private:
+        AssetPairHandler asset_pair_handler_;
         std::shared_ptr<ITradingPlatform> trading_platform_;
 };
 

@@ -57,6 +57,7 @@ set(SOURCES
 main.cpp
 common/utilities/source/multipurpose_converter.cpp
 trading/bot/source/trader.cpp
+trading/bot/source/asset_pair_handler.cpp
 trading/bot/source/trading_platform_observer.cpp
 trading_platforms/kraken/source/kraken.cpp)
 
