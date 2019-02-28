@@ -15,8 +15,8 @@ AssetPairHandler::AssetPairHandler(std::shared_ptr<ITradingPlatform> trading_pla
     max_pairs_count_[trading::XBT] = trading::kMaxXBTPairsCount;
 }
 
-error::TradingError AssetPairHandler::AddAssetPair(const trading::pair_t& asset_pair) {
-    std::vector<trading::pair_t>::const_iterator element = Searcher<trading::pair_t>::Search(asset_pairs_, asset_pair);
+error::TradingError AssetPairHandler::AddAssetPair(const trading::asset_pair_t& asset_pair) {
+    std::vector<trading::asset_pair_t>::const_iterator element = Searcher<trading::asset_pair_t>::Search(asset_pairs_, asset_pair);
 
     if(asset_pairs_.end() != element) {
         std::cout << "Already added pair = " << asset_pair << std::endl;
@@ -38,14 +38,14 @@ error::TradingError AssetPairHandler::AddAssetPair(const trading::pair_t& asset_
               << "pairs_count_[base_currency] = " << pairs_count_[base_currency] << std::endl;
 
     asset_pairs_.push_back(asset_pair);
-    asset_pairs_ = Sorter<trading::pair_t>::Sort(asset_pairs_);
+    asset_pairs_ = Sorter<trading::asset_pair_t>::Sort(asset_pairs_);
 }
 
-error::TradingError AssetPairHandler::RemovePair(const trading::pair_t& asset_pair) {
-    std::vector<trading::pair_t>::const_iterator pair_to_remove = Searcher<trading::pair_t>::Search(asset_pairs_, asset_pair);
-    std::vector<trading::pair_t> updated_asset_pairs;
+error::TradingError AssetPairHandler::RemovePair(const trading::asset_pair_t& asset_pair) {
+    std::vector<trading::asset_pair_t>::const_iterator pair_to_remove = Searcher<trading::asset_pair_t>::Search(asset_pairs_, asset_pair);
+    std::vector<trading::asset_pair_t> updated_asset_pairs;
 
-    std::vector<trading::pair_t>::const_iterator iter = asset_pairs_.begin();
+    std::vector<trading::asset_pair_t>::const_iterator iter = asset_pairs_.begin();
     for( ; iter < pair_to_remove; iter++) {
         updated_asset_pairs.push_back(*iter);
     }
@@ -58,7 +58,7 @@ error::TradingError AssetPairHandler::RemovePair(const trading::pair_t& asset_pa
     asset_pairs_ = updated_asset_pairs;
 }
 
-trading::Currency AssetPairHandler::SeparateBaseCurrency(const trading::pair_t& asset_pair) {
+trading::Currency AssetPairHandler::SeparateBaseCurrency(const trading::asset_pair_t& asset_pair) {
     for(auto& item : pairs_count_) {
         std::string string_currency = MultipurposeConverter::ConvertCurrencyToString(item.first);
 

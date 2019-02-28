@@ -9,46 +9,10 @@ static const int kMaxUSDPairsCount = 5;
 static const int kMaxEURPairsCount = 5;
 static const int kMaxXBTPairsCount = 5;
 
+typedef std::string id_t;
+typedef std::string asset_pair_t;
 typedef double price_t;
 typedef double volume_t;
-typedef std::string id_t;
-typedef std::string pair_t;
-typedef std::string currecy_t;
-typedef std::string type_t;
-
-struct Order {
-    Order(const int& id,
-          const volume_t& volume,
-          const price_t& price,
-          const time_t& current_time,
-          const pair_t& pair,
-          const type_t& type)
-    : local_ID_(id),
-      volume_(volume),
-      price_(price),
-      time_placed_(current_time),
-      pair_(pair),
-      type_(type) {}
-
-    int local_ID_;
-    id_t trading_patform_ID_;
-    volume_t volume_;
-    price_t price_;
-    time_t time_placed_;
-    type_t type_;
-    pair_t pair_;
-};
-
-struct PricePresset {
-    PricePresset() {}
-    PricePresset(const int& left_side_symbols_count,
-                 const int& right_side_symbols_count)
-    : left_side_symbols_count_(left_side_symbols_count),
-      right_side_symbols_count_(right_side_symbols_count) {}
-
-    int left_side_symbols_count_;
-    int right_side_symbols_count_;
-};
 
 enum OrderStatus {
     NONE,
@@ -56,6 +20,11 @@ enum OrderStatus {
     SECONDHANG,
     THIRDHAND,
     STOPLOSS
+};
+
+enum OrderType {
+    BUY,
+    SELL
 };
 
 enum Currency {
@@ -68,6 +37,37 @@ enum Currency {
 enum Operation {
     INSERT,
     CHECKUP
+};
+
+struct Order {
+    Order(const asset_pair_t& asset_pair,
+          const volume_t& volume,
+          const price_t& price,
+          const time_t& current_time,
+          const OrderType& type)
+    : asset_pair_(asset_pair),
+      volume_(volume),
+      price_(price),
+      time_placed_(current_time),
+      type_(type) {}
+
+    id_t trading_patform_ID_;
+    asset_pair_t asset_pair_;
+    volume_t volume_;
+    price_t price_;
+    time_t time_placed_;
+    OrderType type_;
+};
+
+struct PricePresset {
+    PricePresset() {}
+    PricePresset(const int& left_side_symbols_count,
+                 const int& right_side_symbols_count)
+    : left_side_symbols_count_(left_side_symbols_count),
+      right_side_symbols_count_(right_side_symbols_count) {}
+
+    int left_side_symbols_count_;
+    int right_side_symbols_count_;
 };
 
 } // trading

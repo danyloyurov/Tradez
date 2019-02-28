@@ -11,8 +11,12 @@ class Trader : public ITradingPlatformObserver {
         ~Trader();
 
         virtual void NotifyOrderClosed(const trading::id_t& order_ID);
-        virtual void NotifyPairFound(const trading::pair_t& asset_pair);
+        virtual void NotifyPairFound(const trading::asset_pair_t& asset_pair);
+
+        void PlaceOrder(const trading::asset_pair_t& asset_pair, const trading::OrderType& order_type);
     private:
+        std::vector<trading::Order> open_orders_;
+        std::map<trading::Currency, trading::volume_t> base_currency_volumes_;
         AssetPairHandler asset_pair_handler_;
         std::shared_ptr<ITradingPlatform> trading_platform_;
 };

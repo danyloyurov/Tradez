@@ -65,7 +65,7 @@ void TradingPlatformObserver::BroadcastEvent(const trading::id_t& order_ID, Clos
     }
 }
 
-void TradingPlatformObserver::BroadcastEvent(const trading::pair_t& asset_pair, AssetPair) {
+void TradingPlatformObserver::BroadcastEvent(const trading::asset_pair_t& asset_pair, AssetPair) {
     for(auto& item : subscribers_) {
         item->NotifyPairFound(asset_pair);
     }

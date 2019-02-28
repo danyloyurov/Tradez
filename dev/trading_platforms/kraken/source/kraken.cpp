@@ -14,7 +14,7 @@ KrakenPlatform::~KrakenPlatform() {
 error::TradingError KrakenPlatform::PlaceOrder(trading::Order& order, const trading::PricePresset& presset) {
     try {
         Kraken::KInput order_to_place;
-        order_to_place["pair"] = order.pair_;
+        order_to_place["pair"] = order.asset_pair_;
         order_to_place["type"] = order.type_;
         order_to_place["ordertype"] = "limit";
 
@@ -73,7 +73,7 @@ error::TradingError KrakenPlatform::RemoveOrder(const trading::id_t& order_ID) {
     }
 }
 
-error::TradingError KrakenPlatform::GetAssetPairs(std::vector<trading::pair_t>& asset_pairs) {
+error::TradingError KrakenPlatform::GetAssetPairs(std::vector<trading::asset_pair_t>& asset_pairs) {
     try {
         Kraken::KInput pairs;
 
@@ -102,7 +102,7 @@ error::TradingError KrakenPlatform::GetAssetPairs(std::vector<trading::pair_t>& 
     }
 }
 
-error::TradingError KrakenPlatform::GetCurrecyMargin(const trading::pair_t& pair, const int& time_period, trading::price_t& currency_margin) {
+error::TradingError KrakenPlatform::GetCurrecyMargin(const trading::asset_pair_t& pair, const int& time_period, trading::price_t& currency_margin) {
     try {
         pair_dump_.clear();
         kraken_client_.trades(pair, "current", pair_dump_);
@@ -141,7 +141,7 @@ error::TradingError KrakenPlatform::GetCurrecyMargin(const trading::pair_t& pair
     }
 }
 
-error::TradingError KrakenPlatform::GetCurrecyPrice(const trading::pair_t& pair, const int& time_period, trading::price_t& price) {
+error::TradingError KrakenPlatform::GetCurrecyPrice(const trading::asset_pair_t& pair, const int& time_period, trading::price_t& price) {
     try {
         pair_dump_.clear();
         kraken_client_.trades(pair, "current", pair_dump_);
@@ -174,7 +174,7 @@ error::TradingError KrakenPlatform::GetCurrecyPrice(const trading::pair_t& pair,
     }
 }
 
-error::TradingError KrakenPlatform::GetPairPriceFormat(const trading::pair_t& pair, trading::PricePresset& presset) {
+error::TradingError KrakenPlatform::GetPairPriceFormat(const trading::asset_pair_t& pair, trading::PricePresset& presset) {
     try {
         pair_dump_.clear();
         kraken_client_.trades(pair, "current", pair_dump_);
@@ -211,7 +211,7 @@ error::TradingError KrakenPlatform::GetPairPriceFormat(const trading::pair_t& pa
     }
 }
 
-error::TradingError KrakenPlatform::GetVolumeToBuy(const trading::pair_t& pair, const trading::price_t& fiat_volume, trading::volume_t& crypto_volume) {
+error::TradingError KrakenPlatform::GetVolumeToBuy(const trading::asset_pair_t& pair, const trading::price_t& fiat_volume, trading::volume_t& crypto_volume) {
     try {
         pair_dump_.clear();
         kraken_client_.trades(pair, "last", pair_dump_);
@@ -222,29 +222,6 @@ error::TradingError KrakenPlatform::GetVolumeToBuy(const trading::pair_t& pair, 
 
         double mult = 1 / price;
         crypto_volume = mult * fiat_volume;
-
-        return error::SUCCESS;
-    } catch(...) {
-        return error::FAILED;
-    }
-}
-
-error::TradingError KrakenPlatform::GetAccountBalance(const trading::currecy_t& currency, trading::volume_t& value) {
-    try {
-        Kraken::KInput account_balance;
-
-        json_string response = libjson::to_json_string(kraken_client_.private_method("Balance", account_balance)); 
-        JSONNode root = libjson::parse(response);
-
-        if (false == root.at("error").empty()) return error::FAILED;
-        if (true == root.at("result").empty()) return error::FAILED;
-
-        JSONNode &result = root["result"];
-
-        std::string balance = libjson::to_std_string( result.at("X" + currency).as_string() );
-
-        balance = balance.substr(0, 7);
-        value = atof(balance.c_str());
 
         return error::SUCCESS;
     } catch(...) {
