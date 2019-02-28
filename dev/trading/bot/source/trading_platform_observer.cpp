@@ -80,9 +80,6 @@ error::TradingError TradingPlatformObserver::PeekEvents(ClosedOrder) {
 }
 
 error::TradingError TradingPlatformObserver::PeekEvents(AssetPair) {
-    const int kTimePeriod = 7200; /*seconds*/
-    const double kMarginPassRate = 2.0;
-
     error::TradingError error_code = error::SUCCESS;
 
     if(true == all_asset_pairs_.empty()) {
@@ -97,13 +94,13 @@ error::TradingError TradingPlatformObserver::PeekEvents(AssetPair) {
     for(auto& pair : all_asset_pairs_) {
         trading::price_t margin = 0.0;
 
-        error_code = trading_platform_->GetCurrecyMargin(pair, kTimePeriod, margin);
+        error_code = trading_platform_->GetCurrecyMargin(pair, trading::kDefaultTimePeriod, margin);
 
         if(error::FAILED == error_code) {
             return error_code;
         }
 
-        if(kMarginPassRate <= margin) {
+        if(trading::kPairMarginPassRate <= margin) {
             high_margin_asset_pairs_.push_back(pair);
             std::cout << pair << " = " << margin << std::endl;
         }

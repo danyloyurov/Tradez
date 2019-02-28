@@ -5,9 +5,18 @@
 
 namespace trading {
 
+static const double kPairMarginPassRate = 3.0;
+static const int kDefaultTimePeriod = 7200; /*seconds*/
+
 static const int kMaxUSDPairsCount = 5;
 static const int kMaxEURPairsCount = 5;
 static const int kMaxXBTPairsCount = 5;
+
+static const int kUSDBaseBuyVolume = 25;
+static const int kEURBaseBuyVolume = 20;
+static const int kXBTBaseBuyVolume = 0.001;
+
+static const int kPriceMultiplier = 1.25;
 
 typedef std::string id_t;
 typedef std::string asset_pair_t;
@@ -68,6 +77,11 @@ struct PricePresset {
 
     int left_side_symbols_count_;
     int right_side_symbols_count_;
+};
+
+auto price_calculator = [](const price_t& price, const OrderType& type)
+{
+    return BUY == type ? price - price / 100 * kPriceMultiplier : price + price / 100 * kPriceMultiplier;
 };
 
 } // trading
