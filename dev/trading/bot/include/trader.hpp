@@ -4,6 +4,7 @@
 #include "trading_platform_observer.hpp"
 #include "trading_platform.hpp"
 #include "asset_pair_handler.hpp"
+#include "container_helper.hpp"
 
 class Trader : public ITradingPlatformObserver {
     public:
@@ -14,8 +15,12 @@ class Trader : public ITradingPlatformObserver {
         virtual void NotifyPairFound(const trading::asset_pair_t& asset_pair);
 
     private:
+        typedef Searcher<trading::Order> OrdersSearcher;
+        typedef Sorter<trading::Order> OrdersSorter;
+        typedef std::vector<trading::Order> OrdersVector;
+
         void PlaceBuyOrder(const trading::asset_pair_t& asset_pair);
-        void PlaceSellOrder(const trading::asset_pair_t& asset_pair);
+        void PlaceSellOrder(const trading::id_t& order_ID);
         void RemoveOrder(const trading::id_t& order_ID);
 
         std::vector<trading::Order> open_orders_;

@@ -1,7 +1,7 @@
 #include "trader.hpp"
-#include "container_helper.hpp"
 
-#include <ctime>
+#include <thread>
+#include <chrono>
 #include <iostream>
 
 Trader::Trader(std::shared_ptr<ITradingPlatform> trading_platform)
@@ -20,6 +20,9 @@ Trader::~Trader() {
 
 void Trader::NotifyOrderClosed(const trading::id_t& order_ID) {
     std::cout << "[Trader] NotifyOrderClosed -> " << order_ID << std::endl;
+
+    PlaceSellOrder(order_ID);
+    std::this_thread::sleep_for(std::chrono::seconds(trading::kPrivateRequestSleep));
 }
 
 void Trader::NotifyPairFound(const trading::asset_pair_t& asset_pair) {
@@ -34,6 +37,7 @@ void Trader::NotifyPairFound(const trading::asset_pair_t& asset_pair) {
     }
 
     PlaceBuyOrder(asset_pair);
+    std::this_thread::sleep_for(std::chrono::seconds(trading::kPrivateRequestSleep));
 }
 
 void Trader::PlaceBuyOrder(const trading::asset_pair_t& asset_pair) {
@@ -70,29 +74,48 @@ void Trader::PlaceBuyOrder(const trading::asset_pair_t& asset_pair) {
 
     price = trading::price_calculator(price, trading::BUY);
 
-    trading::Order order(asset_pair, order_volume, price, std::time(nullptr), trading::BUY);
+    trading::Order buy_order(asset_pair, order_volume, price, trading::BUY, price_presset);
 
-    error_code = trading_platform_->PlaceOrder(order, price_presset);
+    error_code = trading_platform_->PlaceOrder(buy_order);
 
     if(error::FAILED == error_code) {
-        std::cout << "[Trader] PlaceOrder::Error -> Unable to place order" << std::endl;
+        std::cout << "[Trader] PlaceBuyOrder::Error -> Unable to place buy order" << std::endl;
         return;
     }
 
-    open_orders_.push_back(order);
-    open_orders_ = Sorter<trading::Order>::Sort(open_orders_);
+    open_orders_.push_back(buy_order);
+    open_orders_ = OrdersSorter::Sort(open_orders_);
 }
 
-void Trader::PlaceSellOrder(const trading::asset_pair_t& asset_pair) {
-    std::cout << "[Trader] PlaceSellOrder -> " << asset_pair << std::endl;
+void Trader::PlaceSellOrder(const trading::id_t& order_ID) {
+    std::cout << "[Trader] PlaceSellOrder -> " << order_ID << std::endl;
 
-    open_orders_ = Sorter<trading::Order>::Sort(open_orders_);
+    typename OrdersVector::const_iterator order_iterator = OrdersSearcher::Search(open_orders_, trading::Order(order_ID));
+
+    error::TradingError error_code = error::SUCCESS;
+
+    trading::price_t sell_price = 0.0;
+    trading::PricePresset price_presset(0, 0);
+    sell_price = trading::price_calculator(order_iterator->price_, trading::SELL);
+
+    trading::Order sell_order(order_iterator->asset_pair_, order_iterator->volume_, sell_price, trading::SELL, order_iterator->price_presset_);
+
+    error_code = trading_platform_->PlaceOrder(sell_order);
+
+    if(error::FAILED == error_code) {
+        std::cout << "[Trader] PlaceSellOrder::Error -> Unable to place sell order" << std::endl;
+        return;
+    }
+
+    RemoveOrder(order_ID);
+    open_orders_.push_back(sell_order);
+    open_orders_ = OrdersSorter::Sort(open_orders_);
 }
 
 void Trader::RemoveOrder(const trading::id_t& order_ID) {
     std::cout << "[Trader] RemoveOrder -> " << order_ID << std::endl;
 
-    typename std::vector<trading::Order>::const_iterator order_to_remove = Searcher<trading::Order>::Search(open_orders_, trading::Order(order_ID));
+    typename OrdersVector::const_iterator order_to_remove = OrdersSearcher::Search(open_orders_, trading::Order(order_ID));
     std::vector<trading::Order> open_orders;
     std::vector<trading::Order>::iterator order_iterator = open_orders_.begin();
 
@@ -107,5 +130,4 @@ void Trader::RemoveOrder(const trading::id_t& order_ID) {
     }
 
     open_orders_ = open_orders;
-    open_orders_ = Sorter<trading::Order>::Sort(open_orders_);
 }

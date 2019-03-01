@@ -1,5 +1,7 @@
 #include "trading_platform_observer.hpp"
 
+#include <thread>
+#include <chrono>
 #include <iostream>
 
 TradingPlatformObserver::TradingPlatformObserver(std::shared_ptr<ITradingPlatform> trading_platform)
@@ -104,6 +106,8 @@ error::TradingError TradingPlatformObserver::PeekEvents(AssetPair) {
             high_margin_asset_pairs_.push_back(pair);
             std::cout << pair << " = " << margin << std::endl;
         }
+
+        std::this_thread::sleep_for(std::chrono::seconds(trading::kPublicRequestSleep));
     }
 
 }
