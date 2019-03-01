@@ -60,27 +60,27 @@ struct Order {
       time_placed_(current_time),
       type_(type) {}
 
-    Order(const asset_pair_t& asset_pair)
-    : asset_pair_(asset_pair) {}
+    Order(const id_t& trading_patform_ID)
+    : trading_patform_ID_(trading_patform_ID) {}
 
     const bool operator>(const Order& order) const {
-        return this->asset_pair_ > order.asset_pair_;
+        return this->trading_patform_ID_ > order.trading_patform_ID_;
     }
 
     const bool operator<(const Order& order) const {
-        return this->asset_pair_ < order.asset_pair_;
+        return this->trading_patform_ID_ < order.trading_patform_ID_;
     }
 
     const bool operator>=(const Order& order) const {
-        return this->asset_pair_ >= order.asset_pair_;
+        return this->trading_patform_ID_ >= order.trading_patform_ID_;
     }
 
     const bool operator<=(const Order& order) const {
-        return this->asset_pair_ <= order.asset_pair_;
+        return this->trading_patform_ID_ <= order.trading_patform_ID_;
     }
 
     const bool operator==(const Order& order) const {
-        return this->asset_pair_ == order.asset_pair_;
+        return this->trading_patform_ID_ == order.trading_patform_ID_;
     }
 
     id_t trading_patform_ID_;

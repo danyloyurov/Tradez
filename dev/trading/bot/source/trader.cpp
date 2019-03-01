@@ -1,4 +1,5 @@
 #include "trader.hpp"
+#include "container_helper.hpp"
 
 #include <ctime>
 #include <iostream>
@@ -79,14 +80,32 @@ void Trader::PlaceBuyOrder(const trading::asset_pair_t& asset_pair) {
     }
 
     open_orders_.push_back(order);
+    open_orders_ = Sorter<trading::Order>::Sort(open_orders_);
 }
 
 void Trader::PlaceSellOrder(const trading::asset_pair_t& asset_pair) {
     std::cout << "[Trader] PlaceSellOrder -> " << asset_pair << std::endl;
 
-
+    open_orders_ = Sorter<trading::Order>::Sort(open_orders_);
 }
 
 void Trader::RemoveOrder(const trading::id_t& order_ID) {
     std::cout << "[Trader] RemoveOrder -> " << order_ID << std::endl;
+
+    typename std::vector<trading::Order>::const_iterator order_to_remove = Searcher<trading::Order>::Search(open_orders_, trading::Order(order_ID));
+    std::vector<trading::Order> open_orders;
+    std::vector<trading::Order>::iterator order_iterator = open_orders_.begin();
+
+    for( ; order_iterator < order_to_remove; order_iterator++) {
+        open_orders.push_back(*order_iterator);
+    }
+
+    order_iterator++;
+
+    for( ; order_iterator < open_orders_.end(); order_iterator++) {
+        open_orders.push_back(*order_iterator);
+    }
+
+    open_orders_ = open_orders;
+    open_orders_ = Sorter<trading::Order>::Sort(open_orders_);
 }
