@@ -11,7 +11,7 @@ KrakenPlatform::~KrakenPlatform() {
     Kraken::terminate();
 }
 
-error::TradingError KrakenPlatform::PlaceOrder(trading::Order& order, const trading::PricePresset& presset) {
+error::TradingError KrakenPlatform::PlaceOrder(trading::Order& order) {
     try {
         Kraken::KInput order_to_place;
         order_to_place["pair"] = order.asset_pair_;
@@ -21,7 +21,7 @@ error::TradingError KrakenPlatform::PlaceOrder(trading::Order& order, const trad
         std::string price = std::to_string(order.price_);
         int commaIdx = price.find(".");
 
-        price = price.substr(0, commaIdx + presset.right_side_symbols_count_);
+        price = price.substr(0, commaIdx + order.price_presset_.right_side_symbols_count_);
 
         order_to_place["price"] = price;
         order_to_place["volume"] = std::to_string(order.volume_);
@@ -211,7 +211,7 @@ error::TradingError KrakenPlatform::GetPairPriceFormat(const trading::asset_pair
     }
 }
 
-error::TradingError KrakenPlatform::GetVolumeToBuy(const trading::asset_pair_t& pair, const trading::price_t& fiat_volume, trading::volume_t& crypto_volume) {
+error::TradingError KrakenPlatform::GetVolumeToBuy(const trading::asset_pair_t& pair, const trading::price_t& base_volume, trading::volume_t& crypto_volume) {
     try {
         pair_dump_.clear();
         kraken_client_.trades(pair, "last", pair_dump_);
@@ -221,7 +221,7 @@ error::TradingError KrakenPlatform::GetVolumeToBuy(const trading::asset_pair_t& 
         trading::price_t price = pair_dump_[pair_dump_.size() - 1].price;
 
         double mult = 1 / price;
-        crypto_volume = mult * fiat_volume;
+        crypto_volume = mult * base_volume;
 
         return error::SUCCESS;
     } catch(...) {
@@ -253,27 +253,5 @@ error::TradingError KrakenPlatform::GetClosedOrders(std::vector<trading::id_t>& 
         return error::SUCCESS;
     } catch(...) {
          return error::FAILED;
-    }
-}
-
-error::TradingError KrakenPlatform::GetOrderVolume(const trading::id_t& id, trading::volume_t& remaining_volume) {
-    try {
-        Kraken::KInput order_status;
-        order_status["txid"] = id;
-
-        json_string response = libjson::to_json_string(kraken_client_.private_method("QueryOrders", order_status)); 
-        JSONNode root = libjson::parse(response);
-
-        if (false == root.at("error").empty()) return error::FAILED;
-        if (true == root.at("result").empty()) return error::FAILED;
-
-        JSONNode &result = root["result"];
-
-        std::string e = libjson::to_std_string( result.at("vol_exec").as_string() );
-        remaining_volume = atof(e.c_str());
-
-        return error::SUCCESS;
-    } catch(...) {
-        return error::FAILED;
     }
 }
