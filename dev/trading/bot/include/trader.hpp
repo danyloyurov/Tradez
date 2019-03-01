@@ -13,8 +13,11 @@ class Trader : public ITradingPlatformObserver {
         virtual void NotifyOrderClosed(const trading::id_t& order_ID);
         virtual void NotifyPairFound(const trading::asset_pair_t& asset_pair);
 
-        void PlaceOrder(const trading::asset_pair_t& asset_pair, const trading::OrderType& order_type);
     private:
+        void PlaceBuyOrder(const trading::asset_pair_t& asset_pair);
+        void PlaceSellOrder(const trading::asset_pair_t& asset_pair);
+        void RemoveOrder(const trading::id_t& order_ID);
+
         std::vector<trading::Order> open_orders_;
         std::map<trading::Currency, trading::volume_t> base_currency_volumes_;
         AssetPairHandler asset_pair_handler_;

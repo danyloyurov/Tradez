@@ -32,11 +32,11 @@ void Trader::NotifyPairFound(const trading::asset_pair_t& asset_pair) {
         return;
     }
 
-    PlaceOrder(asset_pair, trading::BUY);
+    PlaceBuyOrder(asset_pair);
 }
 
-void Trader::PlaceOrder(const trading::asset_pair_t& asset_pair, const trading::OrderType& order_type) {
-    std::cout << "[Trader] PlaceOrder -> " << asset_pair << std::endl;
+void Trader::PlaceBuyOrder(const trading::asset_pair_t& asset_pair) {
+    std::cout << "[Trader] PlaceBuyOrder -> " << asset_pair << std::endl;
 
     error::TradingError error_code = error::SUCCESS;
 
@@ -53,27 +53,23 @@ void Trader::PlaceOrder(const trading::asset_pair_t& asset_pair, const trading::
         return;
     }
 
-    if(trading::BUY == order_type) {
-        error_code = trading_platform_->GetCurrecyPrice(asset_pair, trading::kDefaultTimePeriod, price);
+    error_code = trading_platform_->GetCurrecyPrice(asset_pair, trading::kDefaultTimePeriod, price);
 
-        if(error::FAILED == error_code) {
-            std::cout << "[Trader] PlaceOrder::Error -> Unable to get pair price" << std::endl;
-            return;
-        }
-
-        error_code = trading_platform_->GetVolumeToBuy(asset_pair, base_currency_volume, order_volume);
-
-        if(error::FAILED == error_code) {
-            std::cout << "[Trader] PlaceOrder::Error -> Unable to get pair volume" << std::endl;
-            return;
-        }
-    } else {
-        //TODO: Implement closed orders replacing
+    if(error::FAILED == error_code) {
+        std::cout << "[Trader] PlaceOrder::Error -> Unable to get pair price" << std::endl;
+        return;
     }
 
-    price = trading::price_calculator(price, order_type);
+    error_code = trading_platform_->GetVolumeToBuy(asset_pair, base_currency_volume, order_volume);
 
-    trading::Order order(asset_pair, order_volume, price, std::time(nullptr), order_type);
+    if(error::FAILED == error_code) {
+        std::cout << "[Trader] PlaceOrder::Error -> Unable to get pair volume" << std::endl;
+        return;
+    }
+
+    price = trading::price_calculator(price, trading::BUY);
+
+    trading::Order order(asset_pair, order_volume, price, std::time(nullptr), trading::BUY);
 
     error_code = trading_platform_->PlaceOrder(order, price_presset);
 
@@ -83,4 +79,14 @@ void Trader::PlaceOrder(const trading::asset_pair_t& asset_pair, const trading::
     }
 
     open_orders_.push_back(order);
+}
+
+void Trader::PlaceSellOrder(const trading::asset_pair_t& asset_pair) {
+    std::cout << "[Trader] PlaceSellOrder -> " << asset_pair << std::endl;
+
+
+}
+
+void Trader::RemoveOrder(const trading::id_t& order_ID) {
+    std::cout << "[Trader] RemoveOrder -> " << order_ID << std::endl;
 }
