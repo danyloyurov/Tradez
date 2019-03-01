@@ -1,7 +1,3 @@
-#include <iostream>
-#include <thread>
-#include <chrono>
-
 #include "trading_platform_observer.hpp"
 #include "kraken.hpp"
 #include "trader.hpp"
@@ -21,7 +17,6 @@ int main() {
         trading_platform_observer.DispatchEvents();
 
         trading_platform_observer.PeekEvents();
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 
     return 0;
