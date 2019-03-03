@@ -10,20 +10,20 @@ static const int kDefaultTimePeriod = 7200; /*seconds*/
 static const int kPrivateRequestSleep = 60; /*seconds*/
 static const int kPublicRequestSleep = 30; /*seconds*/
 
-static const int kMaxUSDPairsCount = 5;
-static const int kMaxEURPairsCount = 5;
-static const int kMaxXBTPairsCount = 5;
+static const int kMaxUSDPairsCount = 0;
+static const int kMaxEURPairsCount = 0;
+static const int kMaxXBTPairsCount = 0;
 
-static const int kUSDBaseBuyVolume = 25;
-static const int kEURBaseBuyVolume = 20;
-static const int kXBTBaseBuyVolume = 0.001;
+static const int kUSDBaseBuyVolume = 0;
+static const int kEURBaseBuyVolume = 0;
+static const int kXBTBaseBuyVolume = 0;
 
-static const int kPriceMultiplier = 1.25;
+static const int kPriceMultiplier = 1.5;
 
-typedef std::string id_t;
-typedef std::string asset_pair_t;
-typedef double price_t;
-typedef double volume_t;
+using id_t = std::string;
+using asset_pair_t = std::string;
+using price_t = double;
+using volume_t = double;
 
 enum OrderType {
     BUY,

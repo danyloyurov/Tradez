@@ -92,6 +92,11 @@ void Trader::PlaceSellOrder(const trading::id_t& order_ID) {
 
     typename OrdersVector::const_iterator order_iterator = OrdersSearcher::Search(open_orders_, trading::Order(order_ID));
 
+    if(open_orders_.end() == order_iterator) {
+        std::cout << "[Trader] PlaceSellOrder::Error -> Unable to find closed order" << std::endl;
+        return;
+    }
+
     error::TradingError error_code = error::SUCCESS;
 
     trading::price_t sell_price = 0.0;

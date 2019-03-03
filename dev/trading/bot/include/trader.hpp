@@ -15,9 +15,9 @@ class Trader : public ITradingPlatformObserver {
         virtual void NotifyPairFound(const trading::asset_pair_t& asset_pair);
 
     private:
-        typedef Searcher<trading::Order> OrdersSearcher;
-        typedef Sorter<trading::Order> OrdersSorter;
-        typedef std::vector<trading::Order> OrdersVector;
+        using OrdersSearcher = Searcher<trading::Order>;
+        using OrdersSorter = Sorter<trading::Order>;
+        using OrdersVector = std::vector<trading::Order>;
 
         void PlaceBuyOrder(const trading::asset_pair_t& asset_pair);
         void PlaceSellOrder(const trading::id_t& order_ID);
