@@ -15,7 +15,7 @@ error::TradingError KrakenPlatform::PlaceOrder(trading::Order& order) {
     try {
         Kraken::KInput order_to_place;
         order_to_place["pair"] = order.asset_pair_;
-        order_to_place["type"] = order.type_;
+        order_to_place["type"] = MultipurposeConverter::ConvertOrderTypeToKrakenType(order.type_);
         order_to_place["ordertype"] = "limit";
 
         std::string price = std::to_string(order.price_);

@@ -34,3 +34,23 @@ std::string MultipurposeConverter::ConvertCurrencyToString(const trading::Curren
 
     return output;
 }
+
+std::string MultipurposeConverter::ConvertOrderTypeToKrakenType(const trading::OrderType& type) {
+    std::string output;
+
+    switch (type) {
+        case trading::BUY: {
+            output = "buy";
+            break;
+        }
+        case trading::SELL: {
+            output = "sell";
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+
+    return output;
+}
