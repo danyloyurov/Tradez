@@ -18,6 +18,8 @@ static const int kUSDBaseBuyVolume = 0;
 static const int kEURBaseBuyVolume = 0;
 static const int kXBTBaseBuyVolume = 0;
 
+static const int kKrakenFee = 0.3; /*percents*/
+
 static const int kPriceMultiplier = 1.5;
 
 using id_t = std::string;
@@ -91,9 +93,12 @@ struct Order {
     PricePresset price_presset_;
 };
 
-auto price_calculator = [](const price_t& price, const OrderType& type)
-{
+auto price_calculator = [](const price_t& price, const OrderType& type) {
     return BUY == type ? price - price / 100 * kPriceMultiplier : price + price / 100 * (kPriceMultiplier * 2);
+};
+
+auto fee_calculator = [](const volume_t& volume, const volume_t& fee_percent) {
+    return volume - volume / 100 * fee_percent;
 };
 
 } // trading
