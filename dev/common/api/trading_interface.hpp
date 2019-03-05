@@ -14,13 +14,13 @@ static const int kMaxUSDPairsCount = 0;
 static const int kMaxEURPairsCount = 0;
 static const int kMaxXBTPairsCount = 0;
 
-static const int kUSDBaseBuyVolume = 0;
-static const int kEURBaseBuyVolume = 0;
-static const int kXBTBaseBuyVolume = 0;
+static const double kUSDBaseBuyVolume = 0;
+static const double kEURBaseBuyVolume = 0;
+static const double kXBTBaseBuyVolume = 0;
 
-static const int kKrakenFee = 0.3; /*percents*/
+static const double kKrakenFee = 0.3; /*percents*/
 
-static const int kPriceMultiplier = 1.5;
+static const double kPriceMultiplier = 1.5;
 
 using id_t = std::string;
 using asset_pair_t = std::string;
