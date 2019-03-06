@@ -15,7 +15,7 @@ int main() {
 
     while(true) {
         trading_platform_observer.DispatchEvents();
-
+        trader.PollOrders();
         trading_platform_observer.PeekEvents();
     }
 

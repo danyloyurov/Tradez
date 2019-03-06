@@ -13,7 +13,7 @@ OrdersHandler::~OrdersHandler() {
 
 }
 
-void OrdersHandler::PlaceBuyOrder(const trading::asset_pair_t& asset_pair, const trading::Currency& base_currency) {
+error::TradingError OrdersHandler::PlaceBuyOrder(const trading::asset_pair_t& asset_pair, const trading::Currency& base_currency) {
     std::cout << "[OrdersHandler] PlaceOrder(Buy) pair: " << asset_pair << std::endl;
 
     error::TradingError error_code = error::SUCCESS;
@@ -27,21 +27,21 @@ void OrdersHandler::PlaceBuyOrder(const trading::asset_pair_t& asset_pair, const
 
     if(error::FAILED == error_code) {
         std::cout << "[OrderHandler] PlaceOrder::Error -> Unable to get pair price presset" << std::endl;
-        return;
+        return error_code;
     }
 
     error_code = trading_platform_->GetCurrecyPrice(asset_pair, trading::kDefaultTimePeriod, price);
 
     if(error::FAILED == error_code) {
         std::cout << "[OrderHandler] PlaceOrder::Error -> Unable to get pair price" << std::endl;
-        return;
+        return error_code;
     }
 
     error_code = trading_platform_->GetVolumeToBuy(asset_pair, base_currency_volume, order_volume);
 
     if(error::FAILED == error_code) {
         std::cout << "[OrderHandler] PlaceOrder::Error -> Unable to get pair volume" << std::endl;
-        return;
+        return error_code;
     }
 
     price = trading::price_calculator(price, trading::BUY);
@@ -52,21 +52,23 @@ void OrdersHandler::PlaceBuyOrder(const trading::asset_pair_t& asset_pair, const
 
     if(error::FAILED == error_code) {
         std::cout << "[OrderHandler] PlaceBuyOrder::Error -> Unable to place buy order" << std::endl;
-        return;
+        return error_code;
     }
 
     open_orders_.push_back(buy_order);
     open_orders_ = OrdersSorter::Sort(open_orders_);
+
+    return error_code;
 }
 
-void OrdersHandler::PlaceSellOrder(const trading::id_t& order_ID) {
+error::TradingError OrdersHandler::PlaceSellOrder(const trading::id_t& order_ID) {
     std::cout << "[OrdersHandler] PlaceOrder(Sell) order ID: " << order_ID << std::endl;
 
     typename OrdersVector::const_iterator order_iterator = OrdersSearcher::Search(open_orders_, trading::Order(order_ID));
 
     if(open_orders_.end() == order_iterator) {
         std::cout << "[OrderHandler] PlaceSellOrder::Error -> Unable to find closed order" << std::endl;
-        return;
+        return error::FAILED;
     }
 
     error::TradingError error_code = error::SUCCESS;
@@ -80,12 +82,14 @@ void OrdersHandler::PlaceSellOrder(const trading::id_t& order_ID) {
 
     if(error::FAILED == error_code) {
         std::cout << "[OrderHandler] PlaceSellOrder::Error -> Unable to place sell order" << std::endl;
-        return;
+        return error_code;
     }
 
     RemoveOrder(order_ID);
     open_orders_.push_back(sell_order);
     open_orders_ = OrdersSorter::Sort(open_orders_);
+
+    return error_code;
 }
 
 void OrdersHandler::RemoveOrder(const trading::id_t& order_ID) {

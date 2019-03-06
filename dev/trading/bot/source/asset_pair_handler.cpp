@@ -56,6 +56,7 @@ error::TradingError AssetPairHandler::RemovePair(const trading::asset_pair_t& as
     }
 
     asset_pairs_ = updated_asset_pairs;
+    DecreasePairsCounter(SeparateBaseCurrency(asset_pair));
 }
 
 trading::Currency AssetPairHandler::SeparateBaseCurrency(const trading::asset_pair_t& asset_pair) {
