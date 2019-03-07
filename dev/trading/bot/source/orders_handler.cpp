@@ -67,8 +67,8 @@ error::TradingError OrdersHandler::PlaceSellOrder(const trading::id_t& order_ID)
     typename OrdersVector::const_iterator order_iterator = OrdersSearcher::Search(open_orders_, trading::Order(order_ID));
 
     if(open_orders_.end() == order_iterator) {
-        std::cout << "[OrderHandler] PlaceSellOrder::Error -> Unable to find closed order" << std::endl;
-        return error::FAILED;
+        std::cout << "[OrderHandler] PlaceSellOrder -> buy order not exists" << std::endl;
+        return error::SUCCESS;
     }
 
     error::TradingError error_code = error::SUCCESS;
