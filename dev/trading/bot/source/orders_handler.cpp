@@ -71,6 +71,14 @@ error::TradingError OrdersHandler::PlaceSellOrder(const trading::id_t& order_ID)
         return error::SUCCESS;
     }
 
+    if(trading::SELL == order_iterator->type_) {
+        std::cout << "[OrderHandler] PlaceSellOrder -> pair cycle end: " << order_iterator->asset_pair_ << std::endl;
+
+        RemoveOrder(order_ID);
+        open_orders_ = OrdersSorter::Sort(open_orders_);
+        return error::SUCCESS;
+    }
+
     error::TradingError error_code = error::SUCCESS;
 
     trading::price_t sell_price = trading::price_calculator(order_iterator->price_, trading::SELL);
