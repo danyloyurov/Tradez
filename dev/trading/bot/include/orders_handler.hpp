@@ -10,10 +10,16 @@ class OrdersHandler {
         OrdersHandler(std::shared_ptr<ITradingPlatform> trading_platform);
         ~OrdersHandler();
 
+        static struct LocalOrder {} LocalOrderTag;
+        static struct RemoteOrder {} RemoteOrderTag;
+
+        std::vector<trading::asset_pair_t> PollExpiredOrders();
+
         error::TradingError PlaceBuyOrder(const trading::asset_pair_t& asset_pair, const trading::Currency& base_currency);
         error::TradingError PlaceSellOrder(const trading::id_t& order_ID);
+        error::TradingError RemoveOrder(const trading::id_t& order_ID, LocalOrder);
+        error::TradingError RemoveOrder(const trading::id_t& order_ID, RemoteOrder);
     private:
-        void RemoveOrder(const trading::id_t& order_ID);
 
         using OrdersSearcher = Searcher<trading::Order>;
         using OrdersSorter = Sorter<trading::Order>;

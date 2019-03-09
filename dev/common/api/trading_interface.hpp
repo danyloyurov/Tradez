@@ -2,6 +2,7 @@
 #define TRADING_INTERFACE_HPP_
 
 #include <string>
+#include <ctime>
 
 namespace trading {
 
@@ -54,11 +55,13 @@ struct Order {
     Order(const asset_pair_t& asset_pair,
           const volume_t& volume,
           const price_t& price,
+          const time_t& time_placed,
           const OrderType& type,
           const PricePresset& price_presset)
     : asset_pair_(asset_pair),
       volume_(volume),
       price_(price),
+      time_placed_(time_placed),
       type_(type),
       price_presset_(price_presset) {}
 
@@ -89,6 +92,7 @@ struct Order {
     asset_pair_t asset_pair_;
     volume_t volume_;
     price_t price_;
+    time_t time_placed_;
     OrderType type_;
     PricePresset price_presset_;
 };

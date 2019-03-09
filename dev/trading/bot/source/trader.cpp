@@ -30,6 +30,12 @@ void Trader::PollOrders() {
 
         std::this_thread::sleep_for(std::chrono::seconds(trading::kPrivateRequestSleep));
     }
+
+    std::vector<trading::asset_pair_t> expired_pairs = orders_handler_.PollExpiredOrders();
+
+    for(auto& pair : expired_pairs) {
+        asset_pair_handler_.RemovePair(pair);
+    }
 }
 
 void Trader::NotifyOrderClosed(const trading::id_t& order_ID) {
