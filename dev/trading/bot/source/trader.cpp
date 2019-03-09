@@ -15,20 +15,18 @@ Trader::~Trader() {
 }
 
 void Trader::PollOrders() {
-    if(true == failed_sell_orders_.empty()) {
-        return;
-    }
+    if(false == failed_sell_orders_.empty()) {
+        error::TradingError error_code = error::SUCCESS;
 
-    error::TradingError error_code = error::SUCCESS;
+        for(auto& order : failed_sell_orders_) {
+            error_code = orders_handler_.PlaceSellOrder(order);
 
-    for(auto& order : failed_sell_orders_) {
-        error_code = orders_handler_.PlaceSellOrder(order);
+            if(error::SUCCESS == error_code) {
+                failed_sell_orders_.remove(order);
+            }
 
-        if(error::SUCCESS == error_code) {
-            failed_sell_orders_.remove(order);
+            std::this_thread::sleep_for(std::chrono::seconds(trading::kPrivateRequestSleep));
         }
-
-        std::this_thread::sleep_for(std::chrono::seconds(trading::kPrivateRequestSleep));
     }
 
     std::vector<trading::asset_pair_t> expired_pairs = orders_handler_.PollExpiredOrders();
