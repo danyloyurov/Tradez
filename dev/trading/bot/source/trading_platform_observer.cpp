@@ -78,6 +78,10 @@ error::TradingError TradingPlatformObserver::PeekEvents(ClosedOrder) {
 
     error_code = trading_platform_->GetClosedOrders(closed_orders_);
 
+    if(true == cached_closed_orders_.empty()) {
+        cached_closed_orders_ = closed_orders_;
+    }
+
     return error_code;
 }
 
