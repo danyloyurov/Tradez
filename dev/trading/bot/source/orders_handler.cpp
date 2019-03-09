@@ -19,6 +19,8 @@ std::vector<trading::asset_pair_t> OrdersHandler::PollExpiredOrders() {
 
     for(auto& order : open_orders_) {
 
+        if(trading::SELL == order.type_) continue;
+
         if((time(NULL) - order.time_placed_) > trading::kDefaultTimePeriod) {
             error_code = RemoveOrder(order.trading_patform_ID_, RemoteOrderTag);
 
