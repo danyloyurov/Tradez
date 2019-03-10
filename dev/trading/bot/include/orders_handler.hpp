@@ -15,12 +15,12 @@ class OrdersHandler {
 
         std::vector<trading::asset_pair_t> PollExpiredOrders();
 
+        trading::Order GetOrder(const trading::id_t& order_ID);
         error::TradingError PlaceBuyOrder(const trading::asset_pair_t& asset_pair, const trading::Currency& base_currency);
         error::TradingError PlaceSellOrder(const trading::id_t& order_ID);
         error::TradingError RemoveOrder(const trading::id_t& order_ID, LocalOrder);
         error::TradingError RemoveOrder(const trading::id_t& order_ID, RemoteOrder);
     private:
-
         using OrdersSearcher = Searcher<trading::Order>;
         using OrdersSorter = Sorter<trading::Order>;
         using OrdersVector = std::vector<trading::Order>;

@@ -1,6 +1,7 @@
 #include "asset_pair_handler.hpp"
 #include "container_helper.hpp"
 #include "multipurpose_converter.hpp"
+#include "logger.hpp"
 
 #include <iostream>
 
@@ -16,50 +17,28 @@ AssetPairHandler::AssetPairHandler(std::shared_ptr<ITradingPlatform> trading_pla
 }
 
 error::TradingError AssetPairHandler::AddAssetPair(const trading::asset_pair_t& asset_pair) {
-    std::vector<trading::asset_pair_t>::const_iterator element = Searcher<trading::asset_pair_t>::Search(asset_pairs_, asset_pair);
+    Logger::Instanse().Log("[AssetPairHandler] AddAssetPair -> " + asset_pair, Logger::FileTag);
 
-    if(asset_pairs_.end() != element) {
-        std::cout << "Already added pair = " << asset_pair << std::endl;
-        return error::FAILED;
-    }
-
-    error::TradingError error_code = error::SUCCESS;
-    trading::Currency base_currency = trading::PASS;
-
-    base_currency = SeparateBaseCurrency(asset_pair);
-    error_code = IncreasePairsCounter(base_currency);
+    trading::Currency base_currency = SeparateBaseCurrency(asset_pair);
+    error::TradingError error_code = IncreasePairsCounter(base_currency);
 
     if(error::FAILED == error_code) {
-        return error_code;
+        Logger::Instanse().Log("[AssetPairHandler::Error] Currency limit reached" + asset_pair, Logger::FileTag);
     }
 
-    std::cout << "base_currency = " << base_currency << std::endl
-              << "asset_pair = " << asset_pair << std::endl
-              << "pairs_count_[base_currency] = " << pairs_count_[base_currency] << std::endl;
-
-    asset_pairs_.push_back(asset_pair);
-    asset_pairs_ = Sorter<trading::asset_pair_t>::Sort(asset_pairs_);
+    return error_code;
 }
 
 error::TradingError AssetPairHandler::RemovePair(const trading::asset_pair_t& asset_pair) {
-    std::vector<trading::asset_pair_t>::const_iterator pair_to_remove = Searcher<trading::asset_pair_t>::Search(asset_pairs_, asset_pair);
-    std::vector<trading::asset_pair_t> updated_asset_pairs;
+    Logger::Instanse().Log("[AssetPairHandler] RemovePair -> " + asset_pair, Logger::FileTag);
 
-    std::vector<trading::asset_pair_t>::const_iterator iter = asset_pairs_.begin();
-    for( ; iter < pair_to_remove; iter++) {
-        updated_asset_pairs.push_back(*iter);
-    }
-
-    iter = pair_to_remove + 1;
-    for( ; iter != asset_pairs_.end(); iter++) {
-        updated_asset_pairs.push_back(*iter);
-    }
-
-    asset_pairs_ = updated_asset_pairs;
     DecreasePairsCounter(SeparateBaseCurrency(asset_pair));
+    return error::SUCCESS;
 }
 
 trading::Currency AssetPairHandler::SeparateBaseCurrency(const trading::asset_pair_t& asset_pair) {
+    Logger::Instanse().Log("[AssetPairHandler] SeparateBaseCurrency -> " + asset_pair, Logger::FileTag);
+
     for(auto& item : pairs_count_) {
         std::string string_currency = MultipurposeConverter::ConvertCurrencyToString(item.first);
 
@@ -72,6 +51,8 @@ trading::Currency AssetPairHandler::SeparateBaseCurrency(const trading::asset_pa
 }
 
 error::TradingError AssetPairHandler::IncreasePairsCounter(const trading::Currency& currency) {
+    Logger::Instanse().Log("[AssetPairHandler] IncreasePairsCounter -> " + std::to_string(currency), Logger::FileTag);
+
     error::TradingError error_code = error::SUCCESS;
 
     if(max_pairs_count_[currency] > pairs_count_[currency]) {
@@ -84,6 +65,8 @@ error::TradingError AssetPairHandler::IncreasePairsCounter(const trading::Curren
 }
 
 void AssetPairHandler::DecreasePairsCounter(const trading::Currency& currency) {
+    Logger::Instanse().Log("[AssetPairHandler] DecreasePairsCounter -> " + std::to_string(currency), Logger::FileTag);
+
     if(pairs_count_[currency] > 0) {
         pairs_count_[currency]--;
     }

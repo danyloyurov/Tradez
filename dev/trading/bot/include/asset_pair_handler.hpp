@@ -1,7 +1,7 @@
 #ifndef ASSET_PAIR_HANDLER_HPP_
 #define ASSET_PAIR_HANDLER_HPP_
 
-#include <vector>
+#include <list>
 #include <memory>
 #include <map>
 
@@ -21,7 +21,6 @@ class AssetPairHandler {
 
         std::map<trading::Currency, int> pairs_count_;
         std::map<trading::Currency, int> max_pairs_count_;
-        std::vector<trading::asset_pair_t> asset_pairs_;
         std::shared_ptr<ITradingPlatform> trading_platform_;
 };
 

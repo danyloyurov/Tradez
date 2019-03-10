@@ -1,4 +1,5 @@
 #include "trading_platform_observer.hpp"
+#include "logger.hpp"
 
 #include <thread>
 #include <chrono>
@@ -15,13 +16,13 @@ void TradingPlatformObserver::PeekEvents() {
     error_code = PeekEvents(ClosedOrderTag);
 
     if(error::FAILED == error_code) {
-        std::cout << "[TradingPlatformObserver] -> PeekEvents() -> Unable to peek closed orders" << std::endl;
+        Logger::Instanse().Log("[TradingPlatformObserver::Error] -> Unable to peek closed orders", Logger::FileTag);
     }
 
     error_code = PeekEvents(AssetPairTag);
 
     if(error::FAILED == error_code) {
-        std::cout << "[TradingPlatformObserver] -> PeekEvents() -> Unable to peek asset pairs" << std::endl;
+        Logger::Instanse().Log("[TradingPlatformObserver::Error] -> Unable to peek asset pairs margins", Logger::FileTag);
     }
 }
 
@@ -93,6 +94,7 @@ error::TradingError TradingPlatformObserver::PeekEvents(AssetPair) {
 
         if(error::FAILED == error_code) {
             all_asset_pairs_.clear();
+            Logger::Instanse().Log("[TradingPlatformObserver::Error] -> Unable to init asset pairs", Logger::FileTag);
             return error_code;
         }
     }
@@ -103,12 +105,13 @@ error::TradingError TradingPlatformObserver::PeekEvents(AssetPair) {
         error_code = trading_platform_->GetCurrecyMargin(pair, trading::kDefaultTimePeriod, margin);
 
         if(error::FAILED == error_code) {
+            Logger::Instanse().Log("[TradingPlatformObserver::Error] -> Unable to get " + pair + " margin", Logger::FileTag);
             return error_code;
         }
 
         if(trading::kPairMarginPassRate <= margin) {
             high_margin_asset_pairs_.push_back(pair);
-            std::cout << pair << " = " << margin << std::endl;
+            Logger::Instanse().Log("[TradingPlatformObserver] -> " + pair + " margin: " + std::to_string(margin), Logger::FileTag);
         }
 
         std::this_thread::sleep_for(std::chrono::seconds(trading::kPublicRequestSleep));

@@ -1,4 +1,5 @@
 #include "trader.hpp"
+#include "logger.hpp"
 
 #include <thread>
 #include <chrono>
@@ -37,36 +38,44 @@ void Trader::PollOrders() {
 }
 
 void Trader::NotifyOrderClosed(const trading::id_t& order_ID) {
-    std::cout << "[Trader] NotifyOrderClosed -> " << order_ID << std::endl;
+    Logger::Instanse().Log("[Trader] NotifyOrderClosed -> " + order_ID, Logger::FileTag);
 
     error::TradingError error_code = error::SUCCESS;
 
     error_code = orders_handler_.PlaceSellOrder(order_ID);
 
     if(error::FAILED == error_code) {
-        std::cout << "[Trader::Error] NotifyPairFound -> Unable to add sell order" << std::endl;
+        Logger::Instanse().Log("[Trader::Error]  Unable to add sell order", Logger::FileTag);
         failed_sell_orders_.push_back(order_ID);
+    } else {
+        trading::Order closed_order = orders_handler_.GetOrder(order_ID);
+
+        if(trading::SELL == closed_order.type_) {
+            Logger::Instanse().Log("[Trader] NotifyOrderClosed -> " + order_ID + " ending cycle", Logger::FileTag);
+            asset_pair_handler_.RemovePair(closed_order.asset_pair_);
+        }
+
     }
 
     std::this_thread::sleep_for(std::chrono::seconds(trading::kPrivateRequestSleep));
 }
 
 void Trader::NotifyPairFound(const trading::asset_pair_t& asset_pair) {
-    std::cout << "[Trader] NotifyPairFound -> " << asset_pair << std::endl;
+    Logger::Instanse().Log("[Trader] NotifyPairFound -> " + asset_pair, Logger::FileTag);
 
     error::TradingError error_code = error::SUCCESS;
 
     error_code = asset_pair_handler_.AddAssetPair(asset_pair);
 
     if(error::FAILED == error_code) {
-        std::cout << "[Trader::Error] NotifyPairFound -> Unable to add pair" << std::endl;
+        Logger::Instanse().Log("[Trader::Error] Unable to add pair", Logger::FileTag);
         return;
     }
 
     error_code = orders_handler_.PlaceBuyOrder(asset_pair, asset_pair_handler_.SeparateBaseCurrency(asset_pair));
 
     if(error::FAILED == error_code) {
-        std::cout << "[Trader::Error] NotifyPairFound -> Unable to add buy order" << std::endl;
+        Logger::Instanse().Log("[Trader::Error] Unable to add buy order", Logger::FileTag);
         asset_pair_handler_.RemovePair(asset_pair);
     }
 
