@@ -58,8 +58,8 @@ set(SOURCES
 main.cpp
 common/utilities/source/multipurpose_converter.cpp
 common/utilities/source/logger.cpp
+common/utilities/source/drawers.cpp
 trading/bot/source/trader.cpp
-trading/bot/source/drawers.cpp
 trading/bot/source/orders_handler.cpp
 trading/bot/source/asset_pair_handler.cpp
 trading/bot/source/trading_platform_observer.cpp
