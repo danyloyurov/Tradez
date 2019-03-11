@@ -48,7 +48,7 @@ void Trader::NotifyOrderClosed(const trading::id_t& order_ID) {
         Logger::Instanse().Log("[Trader::Error]  Unable to add sell order", Logger::FileTag);
         failed_sell_orders_.push_back(order_ID);
     } else {
-        trading::Order closed_order = orders_handler_.GetOrder(order_ID);
+        trading::Order closed_order = orders_handler_.GetCachedOrder();
 
         if(trading::SELL == closed_order.type_) {
             Logger::Instanse().Log("[Trader] NotifyOrderClosed -> " + order_ID + " ending cycle", Logger::FileTag);

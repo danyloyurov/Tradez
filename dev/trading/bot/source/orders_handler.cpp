@@ -4,7 +4,8 @@
 #include <iostream>
 
 OrdersHandler::OrdersHandler(std::shared_ptr<ITradingPlatform> trading_platform)
-    : trading_platform_(trading_platform) {
+    : cached_order_("", 0, 0, 0, trading::BUY, trading::PricePresset(0, 0)),
+      trading_platform_(trading_platform) {
     base_currency_volumes_[trading::USD] = trading::kUSDBaseBuyVolume;
     base_currency_volumes_[trading::EUR] = trading::kEURBaseBuyVolume;
     base_currency_volumes_[trading::XBT] = trading::kXBTBaseBuyVolume;
@@ -40,16 +41,9 @@ std::vector<trading::asset_pair_t> OrdersHandler::PollExpiredOrders() {
     return expired_pairs;
 }
 
-trading::Order OrdersHandler::GetOrder(const trading::id_t& order_ID) {
-    Logger::Instanse().Log("[OrderHandler] GetOrder -> " + order_ID, Logger::FileTag);
-
-    typename OrdersVector::const_iterator order = OrdersSearcher::Search(open_orders_, order_ID);
-
-    if(open_orders_.end() == order) {
-        return trading::Order("", 0, 0, 0, trading::BUY, trading::PricePresset(0, 0));
-    }
-
-    return *order;
+trading::Order OrdersHandler::GetCachedOrder() {
+    Logger::Instanse().Log("[OrderHandler] GetCachedOrder", Logger::FileTag);
+    return cached_order_;
 }
 
 error::TradingError OrdersHandler::PlaceBuyOrder(const trading::asset_pair_t& asset_pair, const trading::Currency& base_currency) {
@@ -116,6 +110,7 @@ error::TradingError OrdersHandler::PlaceSellOrder(const trading::id_t& order_ID)
     if(trading::SELL == order_iterator->type_) {
         Logger::Instanse().Log("[OrderHandler] pair cycle ended! Removing pair -> " + order_iterator->asset_pair_, Logger::FileTag);
 
+        cached_order_ = *order_iterator;
         RemoveOrder(order_ID, LocalOrderTag);
         open_orders_ = OrdersSorter::Sort(open_orders_);
         return error::SUCCESS;
