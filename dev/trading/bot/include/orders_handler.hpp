@@ -4,6 +4,7 @@
 #include "trading_platform.hpp"
 #include "asset_pair_handler.hpp"
 #include "container_helper.hpp"
+#include "drawers.hpp"
 
 class OrdersHandler {
     public:
@@ -28,6 +29,7 @@ class OrdersHandler {
         std::vector<trading::Order> open_orders_;
         std::map<trading::Currency, trading::volume_t> base_currency_volumes_;
         std::shared_ptr<ITradingPlatform> trading_platform_;
+        OrdersDrawer drawer_;
 };
 
 #endif // ORDERS_HANDLER_HPP_

@@ -26,6 +26,9 @@ error::TradingError AssetPairHandler::AddAssetPair(const trading::asset_pair_t& 
         Logger::Instanse().Log("[AssetPairHandler::Error] Currency limit reached" + asset_pair, Logger::FileTag);
     }
 
+    drawer_.Flush();
+    drawer_.Draw(pairs_count_);
+
     return error_code;
 }
 
@@ -33,6 +36,8 @@ error::TradingError AssetPairHandler::RemovePair(const trading::asset_pair_t& as
     Logger::Instanse().Log("[AssetPairHandler] RemovePair -> " + asset_pair, Logger::FileTag);
 
     DecreasePairsCounter(SeparateBaseCurrency(asset_pair));
+    drawer_.Flush();
+    drawer_.Draw(pairs_count_);
     return error::SUCCESS;
 }
 

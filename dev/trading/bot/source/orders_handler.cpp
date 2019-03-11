@@ -97,6 +97,9 @@ error::TradingError OrdersHandler::PlaceBuyOrder(const trading::asset_pair_t& as
     open_orders_.push_back(buy_order);
     open_orders_ = OrdersSorter::Sort(open_orders_);
 
+    drawer_.Flush();
+    drawer_.Draw(open_orders_);
+
     return error_code;
 }
 
@@ -136,6 +139,9 @@ error::TradingError OrdersHandler::PlaceSellOrder(const trading::id_t& order_ID)
     open_orders_.push_back(sell_order);
     open_orders_ = OrdersSorter::Sort(open_orders_);
 
+    drawer_.Flush();
+    drawer_.Draw(open_orders_);
+
     return error_code;
 }
 
@@ -157,6 +163,10 @@ error::TradingError OrdersHandler::RemoveOrder(const trading::id_t& order_ID, Or
     }
 
     open_orders_ = open_orders;
+
+    drawer_.Flush();
+    drawer_.Draw(open_orders_);
+
     return error::SUCCESS;
 }
 

@@ -5,6 +5,7 @@
 #include <memory>
 #include <map>
 
+#include "drawers.hpp"
 #include "trading_platform.hpp"
 #include "trading_interface.hpp"
 
@@ -22,6 +23,7 @@ class AssetPairHandler {
         std::map<trading::Currency, int> pairs_count_;
         std::map<trading::Currency, int> max_pairs_count_;
         std::shared_ptr<ITradingPlatform> trading_platform_;
+        AssetPairsDrawer drawer_;
 };
 
 #endif // ASSET_PAIR_HANDLER_HPP_
