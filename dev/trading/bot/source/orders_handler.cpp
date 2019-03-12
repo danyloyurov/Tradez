@@ -19,13 +19,19 @@ std::vector<trading::asset_pair_t> OrdersHandler::PollExpiredOrders() {
     Logger::Instanse().Log("[OrderHandler] PollExpiredOrders", Logger::FileTag);
 
     error::TradingError error_code = error::SUCCESS;
+    time_t current_time = time(NULL);
     std::vector<trading::asset_pair_t> expired_pairs;
 
     for(auto& order : open_orders_) {
 
-        if(trading::SELL == order.type_) continue;
+        if(trading::SELL == order.type_) {
+            Logger::Instanse().Log("[OrderHandler::Error] Sell order can't expire", Logger::FileTag);
+            continue;
+        }
 
-        if((time(NULL) - order.time_placed_) > trading::kDefaultTimePeriod) {
+        Logger::Instanse().Log("[OrderHandler] Time diff: " + std::to_string(current_time - order.time_placed_), Logger::FileTag);
+
+        if((current_time - order.time_placed_) > trading::kDefaultTimePeriod) {
             error_code = RemoveOrder(order.trading_patform_ID_, RemoteOrderTag);
 
             if(error::SUCCESS == error_code) {
