@@ -14,8 +14,6 @@ class OrdersHandler {
         static struct LocalOrder {} LocalOrderTag;
         static struct RemoteOrder {} RemoteOrderTag;
 
-        std::vector<trading::asset_pair_t> PollExpiredOrders();
-
         trading::Order GetCachedOrder();
         error::TradingError PlaceBuyOrder(const trading::asset_pair_t& asset_pair, const trading::Currency& base_currency);
         error::TradingError PlaceSellOrder(const trading::id_t& order_ID);

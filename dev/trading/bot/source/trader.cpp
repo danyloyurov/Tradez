@@ -15,7 +15,7 @@ Trader::~Trader() {
 
 }
 
-void Trader::PollOrders() {
+void Trader::PollFailedOrders() {
     if(false == failed_sell_orders_.empty()) {
         error::TradingError error_code = error::SUCCESS;
 
@@ -28,16 +28,6 @@ void Trader::PollOrders() {
 
             std::this_thread::sleep_for(std::chrono::seconds(trading::kPrivateRequestSleep));
         }
-    }
-
-    std::vector<trading::asset_pair_t> expired_pairs = orders_handler_.PollExpiredOrders();
-
-    if(true == expired_pairs.empty()) {
-        Logger::Instanse().Log("[Trader] No expired orders found", Logger::FileTag);
-    }
-
-    for(auto& pair : expired_pairs) {
-        asset_pair_handler_.RemovePair(pair);
     }
 }
 

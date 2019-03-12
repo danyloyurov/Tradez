@@ -11,7 +11,7 @@ class Trader : public ITradingPlatformObserver {
         Trader(std::shared_ptr<ITradingPlatform> trading_platform);
         ~Trader();
 
-        void PollOrders();
+        void PollFailedOrders();
 
         virtual void NotifyOrderClosed(const trading::id_t& order_ID);
         virtual void NotifyPairFound(const trading::asset_pair_t& asset_pair);

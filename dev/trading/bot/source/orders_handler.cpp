@@ -15,38 +15,6 @@ OrdersHandler::~OrdersHandler() {
 
 }
 
-std::vector<trading::asset_pair_t> OrdersHandler::PollExpiredOrders() {
-    Logger::Instanse().Log("[OrderHandler] PollExpiredOrders", Logger::FileTag);
-
-    error::TradingError error_code = error::SUCCESS;
-    time_t current_time = time(NULL);
-    std::vector<trading::asset_pair_t> expired_pairs;
-
-    for(auto& order : open_orders_) {
-
-        if(trading::SELL == order.type_) {
-            Logger::Instanse().Log("[OrderHandler::Error] Sell order can't expire", Logger::FileTag);
-            continue;
-        }
-
-        Logger::Instanse().Log("[OrderHandler] Time diff: " + std::to_string(current_time - order.time_placed_), Logger::FileTag);
-
-        if((current_time - order.time_placed_) > trading::kDefaultTimePeriod) {
-            error_code = RemoveOrder(order.trading_patform_ID_, RemoteOrderTag);
-
-            if(error::SUCCESS == error_code) {
-                Logger::Instanse().Log("[OrderHandler] PollExpiredOrders -> " + order.asset_pair_, Logger::FileTag);
-                expired_pairs.push_back(order.asset_pair_);
-                RemoveOrder(order.trading_patform_ID_, LocalOrderTag);
-            }
-
-        }
-
-    }
-
-    return expired_pairs;
-}
-
 trading::Order OrdersHandler::GetCachedOrder() {
     Logger::Instanse().Log("[OrderHandler] GetCachedOrder", Logger::FileTag);
     return cached_order_;
