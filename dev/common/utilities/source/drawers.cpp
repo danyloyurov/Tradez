@@ -5,6 +5,27 @@
 #include <iostream>
 #include <stdio.h>
 
+void CommonSystemDrawer::Draw(const time_t& time) {
+    int x = kStartX;
+    int y = kStartY;
+
+    set_cursor(x, y++);
+    std::cout << "System time " << std::endl;
+    set_cursor(x, y++);
+    std::cout << "_____________" << std::endl;
+    set_cursor(x, y++);
+    std::cout << std::to_string(time) << std::endl;
+}
+
+void CommonSystemDrawer::Flush() {
+    for(int y = kStartY; y < kEndY; y++) {
+        for(int x = kStartX; x < kEndX; x++) {
+            set_cursor(x, y);
+            std::cout << " ";
+        }
+    }
+}
+
 void AssetPairsDrawer::Draw(const std::map<trading::Currency, int>& pairs_data) {
     int x = kStartX;
     int y = kStartY;

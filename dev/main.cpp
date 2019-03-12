@@ -10,12 +10,15 @@ int main() {
 
     TradingPlatformObserver trading_platform_observer(trading_platform);
     Trader trader(trading_platform);
+    CommonSystemDrawer system_drawer;
 
     trading_platform_observer.SubsctibeObserver(std::make_shared<Trader>(trader));
 
     while(true) {
+        system_drawer.Flush();
+        system_drawer.Draw(time(NULL));
         trading_platform_observer.DispatchEvents();
-        trader.PollOrders();
+        trader.PollFailedOrders();
         trading_platform_observer.PeekEvents();
     }
 

@@ -7,6 +7,17 @@
 #include <map>
 #include <vector>
 
+class CommonSystemDrawer : public IDrawingTool<time_t> {
+    public:
+        virtual void Draw(const time_t& time);
+        virtual void Flush();
+    private:
+        const int kStartX = 110;
+        const int kStartY = 1;
+        const int kEndX = 200;
+        const int kEndY = 10;
+};
+
 class AssetPairsDrawer : public IDrawingTool<std::map<trading::Currency, int>> {
     public:
         virtual void Draw(const std::map<trading::Currency, int>& pairs_data);
