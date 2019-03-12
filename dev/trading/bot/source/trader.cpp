@@ -32,6 +32,10 @@ void Trader::PollOrders() {
 
     std::vector<trading::asset_pair_t> expired_pairs = orders_handler_.PollExpiredOrders();
 
+    if(true == expired_pairs.empty()) {
+        Logger::Instanse().Log("[Trader] No expired orders found", Logger::FileTag);
+    }
+
     for(auto& pair : expired_pairs) {
         asset_pair_handler_.RemovePair(pair);
     }
