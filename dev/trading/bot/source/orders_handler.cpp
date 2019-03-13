@@ -20,6 +20,42 @@ trading::Order OrdersHandler::GetCachedOrder() {
     return cached_order_;
 }
 
+std::vector<trading::asset_pair_t> OrdersHandler::PollExpiredOrders() {
+    Logger::Instanse().Log("[OrderHandler] PollExpiredOrders", Logger::FileTag);
+
+    error::TradingError error_code = error::SUCCESS;
+    time_t current_time = time(NULL);
+    std::vector<trading::asset_pair_t> expired_pairs;
+
+    if(true == open_orders_.empty()) {
+        Logger::Instanse().Log("[OrderHandler] No open orders", Logger::FileTag);
+    }
+
+    for(auto& order : open_orders_) {
+
+        if(trading::SELL == order.type_) {
+            Logger::Instanse().Log("[OrderHandler] Sell order can't expire", Logger::FileTag);
+            continue;
+        }
+
+        Logger::Instanse().Log("[OrderHandler] Time diff: " + std::to_string(current_time - order.time_placed_), Logger::FileTag);
+
+        if(current_time - order.time_placed_ > trading::kOrderExpirationTimePeriod) {
+            error_code = RemoveOrder(order.trading_patform_ID_, RemoteOrderTag);
+
+            if(error::SUCCESS == error_code) {
+                Logger::Instanse().Log("[OrderHandler] PollExpiredOrders -> " + order.asset_pair_, Logger::FileTag);
+                expired_pairs.push_back(order.asset_pair_);
+                RemoveOrder(order.trading_patform_ID_, LocalOrderTag);
+            }
+
+        }
+
+    }
+
+    return expired_pairs;
+}
+
 error::TradingError OrdersHandler::PlaceBuyOrder(const trading::asset_pair_t& asset_pair, const trading::Currency& base_currency) {
     Logger::Instanse().Log("[OrderHandler] PlaceBuyOrder -> " + asset_pair, Logger::FileTag);
 

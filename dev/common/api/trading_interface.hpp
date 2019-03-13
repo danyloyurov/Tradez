@@ -8,6 +8,7 @@ namespace trading {
 
 static const double kPairMarginPassRate = 3.0;
 static const int kDefaultTimePeriod = 7200; /*seconds*/
+static const int kOrderExpirationTimePeriod = 14400; /*seconds*/
 static const int kPrivateRequestSleep = 60; /*seconds*/
 static const int kPublicRequestSleep = 30; /*seconds*/
 
