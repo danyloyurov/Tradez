@@ -23,7 +23,7 @@ error::TradingError AssetPairHandler::AddAssetPair(const trading::asset_pair_t& 
     error::TradingError error_code = IncreasePairsCounter(base_currency);
 
     if(error::FAILED == error_code) {
-        Logger::Instanse().Log("[AssetPairHandler::Error] Currency limit reached" + asset_pair, Logger::FileTag);
+        Logger::Instanse().Log("[AssetPairHandler::Error] Currency limit reached", Logger::FileTag);
     }
 
     drawer_.Flush();
