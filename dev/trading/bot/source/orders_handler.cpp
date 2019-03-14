@@ -112,7 +112,8 @@ error::TradingError OrdersHandler::PlaceSellOrder(const trading::id_t& order_ID)
     typename OrdersVector::const_iterator order_iterator = OrdersSearcher::Search(open_orders_, trading::Order(order_ID));
 
     if(open_orders_.end() == order_iterator) {
-         Logger::Instanse().Log("[OrderHandler] nothing to replace! Don't see buy order", Logger::FileTag);
+        Logger::Instanse().Log("[OrderHandler::Error] Can't find order! -> " + order_ID, Logger::FileTag);
+        cached_order_ = trading::Order("", 0, 0, 0, trading::BUY, trading::PricePresset(0, 0));
         return error::SUCCESS;
     }
 
