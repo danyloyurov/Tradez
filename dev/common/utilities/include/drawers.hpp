@@ -36,7 +36,7 @@ class OrdersDrawer : public IDrawingTool<std::vector<trading::Order>> {
     private:
         const int kStartX = 0;
         const int kStartY = 15;
-        const int kEndX = 300;
+        const int kEndX = 400;
         const int kEndY = 30;
 };
 

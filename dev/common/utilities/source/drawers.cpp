@@ -57,9 +57,9 @@ void OrdersDrawer::Draw(const std::vector<trading::Order>& orders) {
     int y = kStartY;
 
     set_cursor(x, y++);
-    std::cout << "Pair      Price     Volume    Type      Time placed" << std::endl;
+    std::cout << "Pair      Price     Volume    Type      Time placed    ID" << std::endl;
     set_cursor(x, y++);
-    std::cout << "____________________________________________________" << std::endl;
+    std::cout << "_________________________________________________________" << std::endl;
 
     for(auto& order : orders) {
         set_cursor(x, y);
@@ -70,8 +70,10 @@ void OrdersDrawer::Draw(const std::vector<trading::Order>& orders) {
         std::cout << order.volume_ << std::endl;
         set_cursor(x + 31, y);
         std::cout << (trading::BUY == order.type_ ? "Buy" : "Sell") << std::endl;
-        set_cursor(x + 41, y++);
+        set_cursor(x + 41, y);
         std::cout << order.time_placed_ << std::endl;
+        set_cursor(x + 55, y++);
+        std::cout << order.trading_patform_ID_ << std::endl;
     }
 }
 
