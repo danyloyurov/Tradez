@@ -72,7 +72,7 @@ void OrdersDrawer::Draw(const std::vector<trading::Order>& orders) {
         std::cout << (trading::BUY == order.type_ ? "Buy" : "Sell") << std::endl;
         set_cursor(x + 41, y);
         std::cout << order.time_placed_ << std::endl;
-        set_cursor(x + 55, y++);
+        set_cursor(x + 56, y++);
         std::cout << order.trading_patform_ID_ << std::endl;
     }
 }
