@@ -23,7 +23,7 @@ error::TradingError AssetPairHandler::AddAssetPair(const trading::asset_pair_t& 
     error::TradingError error_code = IncreasePairsCounter(base_currency);
 
     if(error::FAILED == error_code) {
-        Logger::Instanse().Log("[AssetPairHandler::Error] Currency limit reached" + asset_pair, Logger::FileTag);
+        Logger::Instanse().Log("[AssetPairHandler::Error] Currency limit reached", Logger::FileTag);
     }
 
     drawer_.Flush();
@@ -62,6 +62,8 @@ error::TradingError AssetPairHandler::IncreasePairsCounter(const trading::Curren
 
     if(max_pairs_count_[currency] > pairs_count_[currency]) {
         pairs_count_[currency]++;
+        Logger::Instanse().Log("[AssetPairHandler::Debug] IncreasePairsCounter -> " + MultipurposeConverter::ConvertCurrencyToString(currency)
+        + ": " + std::to_string(pairs_count_[currency]), Logger::FileTag);
     } else {
         error_code = error::FAILED;
     }
@@ -74,5 +76,7 @@ void AssetPairHandler::DecreasePairsCounter(const trading::Currency& currency) {
 
     if(pairs_count_[currency] > 0) {
         pairs_count_[currency]--;
+        Logger::Instanse().Log("[AssetPairHandler::Debug] DecreasePairsCounter -> " + MultipurposeConverter::ConvertCurrencyToString(currency)
+        + ": " + std::to_string(pairs_count_[currency]), Logger::FileTag);
     }
 }

@@ -27,9 +27,7 @@ std::vector<trading::asset_pair_t> OrdersHandler::PollExpiredOrders() {
     time_t current_time = time(NULL);
     std::vector<trading::asset_pair_t> expired_pairs;
 
-    if(true == open_orders_.empty()) {
-        Logger::Instanse().Log("[OrderHandler] No open orders", Logger::FileTag);
-    }
+    Logger::Instanse().Log("[OrderHandler::Debug] open_orders.size(): " + std::to_string(open_orders_.size()), Logger::FileTag);
 
     for(auto& order : open_orders_) {
 
@@ -103,6 +101,7 @@ error::TradingError OrdersHandler::PlaceBuyOrder(const trading::asset_pair_t& as
 
     drawer_.Flush();
     drawer_.Draw(open_orders_);
+    Logger::Instanse().Log("[OrderHandler::Debug] open_orders_.size(): " + std::to_string(open_orders_.size()), Logger::FileTag);
 
     return error_code;
 }
@@ -113,7 +112,8 @@ error::TradingError OrdersHandler::PlaceSellOrder(const trading::id_t& order_ID)
     typename OrdersVector::const_iterator order_iterator = OrdersSearcher::Search(open_orders_, trading::Order(order_ID));
 
     if(open_orders_.end() == order_iterator) {
-         Logger::Instanse().Log("[OrderHandler] nothing to replace! Don't see buy order", Logger::FileTag);
+        Logger::Instanse().Log("[OrderHandler::Error] Can't find order! -> " + order_ID, Logger::FileTag);
+        cached_order_ = trading::Order("", 0, 0, 0, trading::BUY, trading::PricePresset(0, 0));
         return error::SUCCESS;
     }
 
@@ -146,12 +146,13 @@ error::TradingError OrdersHandler::PlaceSellOrder(const trading::id_t& order_ID)
 
     drawer_.Flush();
     drawer_.Draw(open_orders_);
+    Logger::Instanse().Log("[OrderHandler::Debug] open_orders_.size(): " + std::to_string(open_orders_.size()), Logger::FileTag);
 
     return error_code;
 }
 
 error::TradingError OrdersHandler::RemoveOrder(const trading::id_t& order_ID, OrdersHandler::LocalOrder) {
-    Logger::Instanse().Log("[OrderHandler] RemoveOrder(LocalOrder) -> " + order_ID, Logger:: FileTag);
+    Logger::Instanse().Log("[OrderHandler] RemoveOrder(LocalOrder) -> " + order_ID, Logger::FileTag);
 
     typename OrdersVector::const_iterator order_to_remove = OrdersSearcher::Search(open_orders_, trading::Order(order_ID));
     std::vector<trading::Order> open_orders;
@@ -171,6 +172,7 @@ error::TradingError OrdersHandler::RemoveOrder(const trading::id_t& order_ID, Or
 
     drawer_.Flush();
     drawer_.Draw(open_orders_);
+    Logger::Instanse().Log("[OrderHandler::Debug] open_orders_.size(): " + std::to_string(open_orders_.size()), Logger::FileTag);
 
     return error::SUCCESS;
 }

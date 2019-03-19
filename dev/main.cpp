@@ -9,16 +9,16 @@ int main() {
     std::shared_ptr<ITradingPlatform> trading_platform = std::make_shared<KrakenPlatform>(kPublicKey, kPrivateKey);
 
     TradingPlatformObserver trading_platform_observer(trading_platform);
-    Trader trader(trading_platform);
+    auto trader = std::make_shared<Trader>(trading_platform);
     CommonSystemDrawer system_drawer;
 
-    trading_platform_observer.SubsctibeObserver(std::make_shared<Trader>(trader));
+    trading_platform_observer.SubsctibeObserver(trader);
 
     while(true) {
         system_drawer.Flush();
         system_drawer.Draw(time(NULL));
         trading_platform_observer.DispatchEvents();
-        trader.PollFailedOrders();
+        trader->PollFailedOrders();
         trading_platform_observer.PeekEvents();
     }
 
