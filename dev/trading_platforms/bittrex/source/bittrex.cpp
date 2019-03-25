@@ -2,28 +2,37 @@
 #include "multipurpose_converter.hpp"
 #include <regex>
 #include <ctime>
+#include <list>
+
 
 BittrexPlatform::BittrexPlatform(const std::string& public_key, const std::string& private_key)
     : btx_client_(public_key, private_key) {
 }
 
+list <std:: string> open_orders_for_closed;
+
 time_t string_to_time(string& time_to_parse) {
-    std::string year, month_day, hours_minutes_seconds;
-    std::smatch match_year, match_month_day, match_hours_minutes_seconds;
+    std::string year;
+    std::string month_day;
+    std::string hours_minutes_seconds;
 
-    std::regex year_ ("[0-9]{4}");
-    std::regex month_day_ ("[0-9]{2}[-]{1}[0-9]{2}");
-    std::regex hours_minutes_seconds_ ("[0-9]{2}[:]{1}[0-9]{2}[:]{1}[0-9]{2}");
+    std::smatch match_year;
+    std::smatch match_month_day;
+    std::smatch match_hours_minutes_seconds;
 
-    while(std::regex_search (time_to_parse, match_year, year_)) {
+    std::regex reg_year_ ("[0-9]{4}");
+    std::regex reg_month_day_ ("[0-9]{2}[-]{1}[0-9]{2}");
+    std::regex reg_hours_minutes_seconds_ ("[0-9]{2}[:]{1}[0-9]{2}[:]{1}[0-9]{2}");
+
+    while(std::regex_search (time_to_parse, match_year, reg_year_)) {
         for(auto& a : match_year) year = a;
         time_to_parse = match_year.suffix().str();
     }
-    while(std::regex_search (time_to_parse, match_mnth_day, month_day_)) {
+    while(std::regex_search (time_to_parse, match_mnth_day, reg_month_day_)) {
         for(auto& a : match_month_day) mnth_day = a;
         time_to_parse = match_month_day.suffix().str();
     }
-    while(std::regex_search (time_to_parse, match_hours_minutes_seconds, hours_minutes_seconds)) {
+    while(std::regex_search (time_to_parse, match_hours_minutes_seconds, reg_hours_minutes_seconds_)) {
         for(auto& a : match_hours_minutes_seconds) hours_minutes_seconds = a;
         time_to_parse = match_hours_minutes_seconds.suffix().str();
     }
@@ -43,7 +52,6 @@ time_t string_to_time(string& time_to_parse) {
 }
 
 
-
 error::TradingError BittrexPlatform::PlaceOrder(trading::Order& order) {
     try {
         if(BUY == order.type){
@@ -58,6 +66,7 @@ error::TradingError BittrexPlatform::PlaceOrder(trading::Order& order) {
             ID = ID.substr(0, rindex);
 
             order.trading_patform_ID_ = ID;
+            open_orders_for_closed.push_back(ID);
         }
         else if(SELL == order.type){
             auto res = btx_client_.get_market().sell_limit(order.asset_pair, static_cast<float>(order.volume), static_cast<float>(order.price));
@@ -71,6 +80,8 @@ error::TradingError BittrexPlatform::PlaceOrder(trading::Order& order) {
             ID = ID.substr(0, rindex);
 
             order.trading_patform_ID_ = ID;
+            open_orders_for_closed.push_back(ID);
+
         }
         return error::SUCCESS;
     } catch(...) {
@@ -231,23 +242,9 @@ error::TradingError BittrexPlatform::GetVolumeToBuy(const trading::asset_pair_t&
 
 error::TradingError BittrexPlatform::GetClosedOrders(std::vector<trading::id_t>& closed_orders) {
     try {
-        Kraken::KInput input_closed_orders;
-        input_closed_orders["ofs"] = "0";
-        json_string response = libjson::to_json_string(kraken_client_.private_method("ClosedOrders", input_closed_orders)); 
-        JSONNode root = libjson::parse(response);
-
-        if (false == root.at("error").empty()) return error::FAILED;
-        if (true == root.at("result").empty()) return error::FAILED;
-
-        std::smatch match;
-        std::regex ebat ("[0-9A-Z]{6}[-]{1}[0-9A-Z]{5}[-]{1}[0-9A-Z]{6}");
-
-        while(std::regex_search (response, match, ebat)) {
-            for(auto& closed_orded : match) {
-                closed_orders.push_back(closed_orded);
-            }
-
-            response = match.suffix().str();
+        for (auto i : open_orders_for_closed){
+            auto res = btx_client_.get_account().get_order(i)
+            if (true == res.closed) closed_orders.push_back(i);
         }
 
         return error::SUCCESS;
