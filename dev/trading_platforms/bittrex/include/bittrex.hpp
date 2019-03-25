@@ -19,6 +19,7 @@ class BittrexPlatform : public ITradingPlatform {
         virtual error::TradingError GetClosedOrders(std::vector<trading::id_t>& closed_orders) final;
     private:
         bittrex::Client btx_client_;
+        std::list <std:: string> open_orders_;
 };
 
 #endif // TRADING_PLATFORM_BITTREX_HPP_
