@@ -23,10 +23,8 @@ list(APPEND LIBS ${CURL_LIBRARIES})
 set(KAPI_SOURCE_DIR external_lib/kraken/)
 aux_source_directory(${KAPI_SOURCE_DIR} KAPI_SOURCE_FILES)
 add_library (kapi STATIC ${KAPI_SOURCE_FILES})
-
-# set some properties when CMAKE_BUILD_TYPE is "Debug"
+target_compile_options(kapi PRIVATE -w)
 set_target_properties (kapi PROPERTIES COMPILE_DEFINITIONS_DEBUG "JSON_DEBUG;JSON_SAFE;JSON_ISO_STRICT" DEBUG_POSTFIX "d")
-
 list (INSERT LIBS 0 kapi)
 
 #-------------------------------------------------------------------------------
@@ -34,25 +32,27 @@ list (INSERT LIBS 0 kapi)
 #-------------------------------------------------------------------------------
 set (LIBJSON_SOURCE_DIR external_lib/kraken/libjson/_internal/Source)
 aux_source_directory (${LIBJSON_SOURCE_DIR} LIBJSON_SOURCE_FILES)
-add_library (libjson STATIC ${LIBJSON_SOURCE_FILES})
-
-# remove "lib" prefix from the name of the libjson archive
-set_target_properties (libjson PROPERTIES PREFIX "")
-
-# set some properties when CMAKE_BUILD_TYPE is "Debug"
-set_target_properties (libjson PROPERTIES COMPILE_DEFINITIONS_DEBUG "JSON_DEBUG;JSON_SAFE;JSON_ISO_STRICT" DEBUG_POSTFIX "d")
-
-list (APPEND LIBS libjson)
+add_library (json STATIC ${LIBJSON_SOURCE_FILES})
+target_compile_options(json PRIVATE -w)
+set_target_properties (json PROPERTIES COMPILE_DEFINITIONS_DEBUG "JSON_DEBUG;JSON_SAFE;JSON_ISO_STRICT" DEBUG_POSTFIX "d")
+list (APPEND LIBS json)
 
 set(DIRS
 common/api
 common/utilities/include
-external_lib/kraken/
-external_lib/krakenlibjson/
-external_lib/tgraphics
-trading/bot/include/
+trading/bot/include
 trading_platforms/common
 trading_platforms/kraken/include)
+
+set(EXT_DIRS
+external_lib/kraken/
+external_lib/kraken/libjson
+external_lib/kraken/libjson/_internal
+external_lib/kraken/libjson/_internal/Source
+external_lib/kraken/libjson/_internal/Source/JSONDefs
+external_lib/kraken/libjson/_internal/Dependencies/libbase64++
+external_lib/kraken/libjson/_internal/Dependencies/mempool++
+external_lib/tgraphics)
 
 set(SOURCES
 main.cpp
@@ -66,6 +66,7 @@ trading/bot/source/trading_platform_observer.cpp
 trading_platforms/kraken/source/kraken.cpp)
 
 include_directories(${DIRS})
+include_directories(${EXT_DIRS} -isystem)
 
 #-------------------------------------------------------------------------------
 # Add the executable 'Tradez'
@@ -74,3 +75,4 @@ include_directories(${DIRS})
 add_executable(${PROJECT_NAME} ${SOURCES})
 set_target_properties (${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS_DEBUG "JSON_DEBUG;JSON_SAFE;JSON_ISO_STRICT")
 target_link_libraries (${PROJECT_NAME} ${LIBS})
+

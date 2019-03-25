@@ -117,4 +117,6 @@ error::TradingError TradingPlatformObserver::PeekEvents(AssetPair) {
         std::this_thread::sleep_for(std::chrono::seconds(trading::kPublicRequestSleep));
     }
 
+    return error_code;
 }
+
