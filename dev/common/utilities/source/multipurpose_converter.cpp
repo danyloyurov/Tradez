@@ -57,7 +57,7 @@ std::string MultipurposeConverter::ConvertOrderTypeToKrakenType(const trading::O
     return output;
 }
 
-time_t string_to_time(std::string& time_to_parse) {
+time_t MultipurposeConverter::ConvertBittrexTimeToSeconds(std::string& time_to_parse) {
     std::string year;
     std::string month_day;
     std::string hours_minutes_seconds;

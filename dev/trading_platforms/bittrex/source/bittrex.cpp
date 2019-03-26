@@ -144,7 +144,7 @@ error::TradingError BittrexPlatform::GetCurrecyPrice(const trading::asset_pair_t
     }
 }
 
-error::TradingError BittrexPlatform::GetPairPriceFormat(const trading::asset_pair_t& pair, trading::PricePresponseset& presponseset) {
+error::TradingError BittrexPlatform::GetPairPriceFormat(const trading::asset_pair_t& pair, trading::PricePresset& presset) {
     try {
         auto response = btx_client_.get_public().get_market_history(pair)
 
@@ -171,8 +171,8 @@ error::TradingError BittrexPlatform::GetPairPriceFormat(const trading::asset_pai
             }
         }
 
-        presponseset.left_side_symbols_count_ = before_comma_max_count;
-        presponseset.right_side_symbols_count_ = after_comma_max_count;
+        presset.left_side_symbols_count_ = before_comma_max_count;
+        presset.right_side_symbols_count_ = after_comma_max_count;
 
         return error::SUCCESS;
     } catch(...) {
