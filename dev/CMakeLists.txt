@@ -52,7 +52,8 @@ common/api
 common/utilities/include
 trading/bot/include
 trading_platforms/common
-trading_platforms/kraken/include)
+trading_platforms/kraken/include
+trading_platforms/bittrex/include)
 
 set(EXT_DIRS
 external_lib/kraken/
@@ -62,6 +63,10 @@ external_lib/kraken/libjson/_internal/Source
 external_lib/kraken/libjson/_internal/Source/JSONDefs
 external_lib/kraken/libjson/_internal/Dependencies/libbase64++
 external_lib/kraken/libjson/_internal/Dependencies/mempool++
+external_lib/libbittrex/
+external_lib/libbittrex/api
+external_lib/libbittrex/lib
+external_lib/libbittrex/response
 external_lib/tgraphics)
 
 set(SOURCES
@@ -73,7 +78,8 @@ trading/bot/source/trader.cpp
 trading/bot/source/orders_handler.cpp
 trading/bot/source/asset_pair_handler.cpp
 trading/bot/source/trading_platform_observer.cpp
-trading_platforms/kraken/source/kraken.cpp)
+trading_platforms/kraken/source/kraken.cpp
+trading_platforms/bittrex/source/bittrex.cpp)
 
 include_directories(${DIRS})
 include_directories(${EXT_DIRS} -isystem)

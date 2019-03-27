@@ -2,7 +2,7 @@
 #define TRADING_PLATFORM_BITTREX_HPP_
 
 #include "trading_platform.hpp"
-#include "external_lib/libbittrex/client.h"
+#include "client.h"
 
 class BittrexPlatform : public ITradingPlatform {
     public:
