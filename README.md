@@ -27,6 +27,12 @@ _Base buy volume means amount of money available to be spent on one buy order_
 
 _This keys you can get from your trading platform account_
 
+## API authors:
+
+**Kraken API:** https://github.com/voidloop/krakenapi
+
+**Bittrex API:** https://github.com/gurpinars/bittrex-cpp
+
 ## License:
 
 MIT
