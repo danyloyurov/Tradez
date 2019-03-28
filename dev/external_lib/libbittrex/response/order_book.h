@@ -25,11 +25,11 @@ struct OrderBookEntry {
 struct OrderBook {
     OrderBook(json o_book, const std::string &type);
 
-    List<OrderBookEntry> buy;
-    List<OrderBookEntry> sell;
+    std::vector<OrderBookEntry> buy;
+    std::vector<OrderBookEntry> sell;
 
 };
-}
-}
+} //Namespace Response
+} //Namespace bittrex
 
 #endif //BITTREX_CPP_ORDER_BOOK_H

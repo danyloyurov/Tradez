@@ -21,16 +21,16 @@ struct Currency {
         base_address = j_currency["BaseAddress"];
     };
 
-    String currency;
-    String currency_long;
-    Int min_confirmation;
-    Double txfee;
+    std::string currency;
+    std::string currency_long;
+    int min_confirmation;
+    double txfee;
     bool is_active;
-    String coin_type;
-    String base_address;
+    std::string coin_type;
+    std::string base_address;
 
 };
-}
-}
+} //Namespace Response
+} //Namespace bittrex
 
 #endif //BITTREX_CPP_CURRENCY_H

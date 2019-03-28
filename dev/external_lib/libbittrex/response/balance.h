@@ -3,7 +3,6 @@
 
 #include "../lib/json.hpp"
 #include "../lib/wrappers.h"
-#include <string>
 
 using json=nlohmann::json;
 using namespace bittrex::lib;
@@ -31,6 +30,6 @@ struct Balance {
     std::string uuid;
 
 };
-}
-}
+} //Namespace Response
+} //Namespace bittrex
 #endif //BITTREX_CPP_BALANCE_H

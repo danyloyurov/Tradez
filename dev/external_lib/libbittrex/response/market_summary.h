@@ -36,13 +36,13 @@ struct MarketSummary {
     std::string time_stamp;
     double bid;
     double ask;
-    int open_buy_orders;
-    int open_sell_orders;
+    Int open_buy_orders;
+    Int open_sell_orders;
     double prev_day;
     std::string created;
 
 };
-}
-}
+} //Namespace Response
+} //Namespace bittrex
 
 #endif //BITTREX_CPP_MARKET_SUMMARY_H

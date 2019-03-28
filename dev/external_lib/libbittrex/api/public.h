@@ -4,36 +4,34 @@
 #include <iostream>
 #include <memory>
 #include <utility>
-#include "../connection.h"
 #include "../response/market.h"
 #include "../response/currency.h"
 #include "../response/ticker.h"
 #include "../response/market_summary.h"
 #include "../response/order_book.h"
 #include "../response/market_history.h"
-#include "api_call.h"
+#include "../api_call.h"
 
 using namespace bittrex;
 
 namespace bittrex {
 namespace api {
 
-class Public : public ApiCall {
+class Public {
 public:
-    explicit Public(std::unique_ptr<Connection> connection) :
-            ApiCall(std::move(connection)) {}
+    explicit Public(std::shared_ptr<ApiCall> &api_call) : _api_call(api_call) {}
 
     /**
      * Get the open and available trading markets at Bittrex along with other meta data
      * @param None
      */
-    List<response::Market> get_markets();
+    std::vector<response::Market> get_markets();
 
     /**
      * Get all supported currencies at Bittrex along with other meta data
      * @param None
      */
-    List<response::Currency> get_currencies();
+    std::vector<response::Currency> get_currencies();
 
     /**
      * Get the current tick values for a market
@@ -45,7 +43,7 @@ public:
      * Get the last 24 hour summary of all active exchanges
      * @param None
      */
-    List<response::MarketSummary> get_market_summaries();
+    std::vector<response::MarketSummary> get_market_summaries();
 
     /**
      * Get the last 24 hour summary of all active exchanges
@@ -64,9 +62,11 @@ public:
      * Retrieve the latest trades that have occured for a specific market
      * @param market a string literal for the market (ex: BTC-LTC)
      */
-    List<response::Trade> get_market_history(const std::string &market);
+    std::vector<response::Trade> get_market_history(const std::string &market);
 
+private:
+    std::shared_ptr<ApiCall> _api_call;
 };
-}
-}
+} //Namespace Api
+} //Namespace Bittrex
 #endif //BITTREX_CPP_PUBLIC_H
