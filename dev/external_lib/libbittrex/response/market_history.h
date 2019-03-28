@@ -3,6 +3,7 @@
 
 #include "../lib/json.hpp"
 #include "../lib/wrappers.h"
+#include <string>
 
 using json=nlohmann::json;
 using namespace bittrex::lib;
@@ -21,13 +22,13 @@ struct Trade {
         order_type = j_market_his["OrderType"];
     };
 
-    Int id;
-    String time_stamp;
-    Double quantity;
-    Double price;
-    Double total;
-    String fill_type;
-    String order_type;
+    int id;
+    std::string time_stamp;
+    double quantity;
+    double price;
+    double total;
+    std::string fill_type;
+    std::string order_type;
 };
 }
 }

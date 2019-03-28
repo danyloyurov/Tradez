@@ -3,6 +3,7 @@
 
 #include "trading_platform.hpp"
 #include "client.h"
+#include <list>
 
 class BittrexPlatform : public ITradingPlatform {
     public:

@@ -37,29 +37,29 @@ struct Order {
         condition_target = j_order["ConditionTarget"];
     };
 
-    String account_id;
-    String order_uuid;
-    String exchange;
-    String type;
-    Double quantity{};
-    Double quantity_remaining{};
-    Double limit{};
-    Double reserved{};
-    Double reserve_remaining{};
-    Double commission_reserved{};
-    Double commission_reserve_remaining{};
-    Double commission_paid{};
-    Double price{};
-    Double price_per_unit{};
-    String opened;
+    std::string account_id;
+    std::string order_uuid;
+    std::string exchange;
+    std::string type;
+    double quantity{};
+    double quantity_remaining{};
+    double limit{};
+    double reserved{};
+    double reserve_remaining{};
+    double commission_reserved{};
+    double commission_reserve_remaining{};
+    double commission_paid{};
+    double price{};
+    double price_per_unit{};
+    std::string opened;
     bool closed{};
     bool is_open{};
-    String sentinel;
+    std::string sentinel;
     bool cancel_initiated{};
     bool immediate_or_cancel{};
     bool is_conditional{};
-    String condition;
-    String condition_target;
+    std::string condition;
+    std::string condition_target;
 
 };
 }
