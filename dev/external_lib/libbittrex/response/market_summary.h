@@ -27,19 +27,19 @@ struct MarketSummary {
         created = j_market_sum["Created"];
     };
 
-    String market_name;
-    Double high;
-    Double low;
-    Double volume;
-    Double last;
-    Double base_volume;
-    String time_stamp;
-    Double bid;
-    Double ask;
-    Int open_buy_orders;
-    Int open_sell_orders;
-    Double prev_day;
-    String created;
+    std::string market_name;
+    double high;
+    double low;
+    double volume;
+    double last;
+    double base_volume;
+    std::string time_stamp;
+    double bid;
+    double ask;
+    int open_buy_orders;
+    int open_sell_orders;
+    double prev_day;
+    std::string created;
 
 };
 }

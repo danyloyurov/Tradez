@@ -3,6 +3,7 @@
 
 #include "../lib/json.hpp"
 #include "../lib/wrappers.h"
+#include <string>
 
 using json=nlohmann::json;
 using namespace bittrex::lib;
@@ -21,13 +22,13 @@ struct Balance {
         uuid = j_balance["Uuid"];
     };
 
-    String currency;
-    Double balance;
-    Double available;
-    Double pending;
-    String crypto_address;
-    Double requested;
-    String uuid;
+    std::string currency;
+    double balance;
+    double available;
+    double pending;
+    std::string crypto_address;
+    double requested;
+    std::string uuid;
 
 };
 }

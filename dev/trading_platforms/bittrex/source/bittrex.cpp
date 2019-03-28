@@ -11,8 +11,8 @@ BittrexPlatform::BittrexPlatform(const std::string& public_key, const std::strin
 
 error::TradingError BittrexPlatform::PlaceOrder(trading::Order& order) {
     try {
-        if(BUY == order.type){
-            auto response = btx_client_.get_market().buy_limit(order.asset_pair, static_cast<float>(order.volume), static_cast<float>(order.price));
+        if(trading::BUY == order.type_){
+            auto response = btx_client_.get_market().buy_limit(order.asset_pair_, static_cast<float>(order.volume_), static_cast<float>(order.price_));
 
             if (true == response.empty()) return error::FAILED;
 
@@ -23,10 +23,10 @@ error::TradingError BittrexPlatform::PlaceOrder(trading::Order& order) {
             ID = ID.substr(0, rindex);
 
             order.trading_patform_ID_ = ID;
-            open_orders_for_closed.push_back(ID);
+            open_orders_.push_back(ID);
         }
-        else if(SELL == order.type){
-            auto response = btx_client_.get_market().sell_limit(order.asset_pair, static_cast<float>(order.volume), static_cast<float>(order.price));
+        else if(trading::SELL == order.type_){
+            auto response = btx_client_.get_market().sell_limit(order.asset_pair_, static_cast<float>(order.volume_), static_cast<float>(order.price_));
 
             if (true == response.empty()) return error::FAILED;
 
@@ -37,7 +37,7 @@ error::TradingError BittrexPlatform::PlaceOrder(trading::Order& order) {
             ID = ID.substr(0, rindex);
 
             order.trading_patform_ID_ = ID;
-            open_orders_for_closed.push_back(ID);
+            open_orders_.push_back(ID);
 
         }
         return error::SUCCESS;
@@ -60,7 +60,7 @@ error::TradingError BittrexPlatform::RemoveOrder(const trading::id_t& order_ID) 
 
 error::TradingError BittrexPlatform::GetAssetPairs(std::vector<trading::asset_pair_t>& asset_pairs) {
     try {
-        auto response = btx_client_.get_public().get_markets()
+        auto response = btx_client_.get_public().get_markets();
 
         for(auto i : response){
             asset_pairs.push_back(i.market_name);
@@ -76,7 +76,7 @@ error::TradingError BittrexPlatform::GetAssetPairs(std::vector<trading::asset_pa
 
 error::TradingError BittrexPlatform::GetCurrecyMargin(const trading::asset_pair_t& pair, const int& time_period, trading::price_t& currency_margin) {
     try {
-        auto response = btx_client_.get_public().get_market_history(pair)
+        auto response = btx_client_.get_public().get_market_history(pair);
 
         time_t curtime;
         time(&curtime);
@@ -85,19 +85,19 @@ error::TradingError BittrexPlatform::GetCurrecyMargin(const trading::asset_pair_
         trading::price_t high = 0;
         for(auto& item : response) {
 
-            if((curtime - MultipurposeConverter::ConvertBittrexTimeToSeconds(response.time_stamp)) < time_period) {
+            if((curtime - MultipurposeConverter::ConvertBittrexTimeToSeconds(item.time_stamp)) < time_period) {
 
                 if(item.price < 0.0001) {
                     currency_margin = -100;
                     break;
                 }
 
-                if(low > item.price) {
-                    low = item.price;
+                if(low > static_cast<double>(item.price)) {
+                    low = static_cast<double>(item.price);
                 }
 
-                if(high < item.price) {
-                    high = item.price;
+                if(high < static_cast<double>(item.price)) {
+                    high = static_cast<double>(item.price);
                 }
 
             }
@@ -123,14 +123,14 @@ error::TradingError BittrexPlatform::GetCurrecyPrice(const trading::asset_pair_t
         trading::price_t high = 0;
         for(auto& item : response) {
 
-            if((curtime - MultipurposeConverter::ConvertBittrexTimeToSeconds(item.time_stamp)) < time_period) {
+            if((curtime - MultipurposeConverter::ConvertBittrexTimeToSeconds(item.time_stamp) < time_period)) {
 
-                if(low > item.price) {
-                    low = item.price;
+                if(low > static_cast<double>(item.price)) {
+                    low = static_cast<double>(item.price);
                 }
 
-                if(high < item.price) {
-                    high = item.price;
+                if(high < static_cast<double>(item.price)) {
+                    high = static_cast<double>(item.price);
                 }
 
             }
@@ -146,7 +146,7 @@ error::TradingError BittrexPlatform::GetCurrecyPrice(const trading::asset_pair_t
 
 error::TradingError BittrexPlatform::GetPairPriceFormat(const trading::asset_pair_t& pair, trading::PricePresset& presset) {
     try {
-        auto response = btx_client_.get_public().get_market_history(pair)
+        auto response = btx_client_.get_public().get_market_history(pair);
 
         time_t curtime;
         time(&curtime);
@@ -156,17 +156,17 @@ error::TradingError BittrexPlatform::GetPairPriceFormat(const trading::asset_pai
         std::string price;
 
         for(auto& item : response) {
-            price = MultipurposeConverter::ConvertFloatToString(item.price);
+            price = MultipurposeConverter::ConvertFloatToString(static_cast<float>(item.price));
 
             int comma_index = price.find(".");
 
-            if(std::string::npos == comma_index || price == "") continue;
+            if(std::string::npos == static_cast<unsigned int>(comma_index) || price == "") continue;
 
             if(comma_index > before_comma_max_count) {
                 before_comma_max_count = comma_index;
             }
 
-            if((price.length() - 1) - comma_index > after_comma_max_count) {
+            if((price.length() - 1) - comma_index > static_cast<unsigned int>(after_comma_max_count)) {
                 after_comma_max_count = (price.length() - 1) - comma_index;
             }
         }
@@ -182,7 +182,7 @@ error::TradingError BittrexPlatform::GetPairPriceFormat(const trading::asset_pai
 
 error::TradingError BittrexPlatform::GetVolumeToBuy(const trading::asset_pair_t& pair, const trading::price_t& base_volume, trading::volume_t& crypto_volume) {
     try {
-        auto response = btx_client_.get_public().get_market_history(pair)
+        auto response = btx_client_.get_public().get_market_history(pair);
 
         if(true == response.empty()) return error::FAILED;
 
@@ -200,7 +200,7 @@ error::TradingError BittrexPlatform::GetVolumeToBuy(const trading::asset_pair_t&
 error::TradingError BittrexPlatform::GetClosedOrders(std::vector<trading::id_t>& closed_orders) {
     try {
         for (auto i : open_orders_){
-            auto response = btx_client_.get_account().get_order(i)
+            auto response = btx_client_.get_account().get_order(i);
             if (true == response.closed) closed_orders.push_back(i);
         }
 

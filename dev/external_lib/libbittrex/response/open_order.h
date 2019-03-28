@@ -31,23 +31,23 @@ struct OpenOrder {
         condition_target = j_order["ConditionTarget"];
     };
 
-    String uuid;
-    String order_uuid;
-    String exchange;
-    String order_type;
-    Double quantity;
-    Double quantity_remaining;
-    Double limit;
-    Double commission_paid;
-    Double price;
-    String price_per_unit;
-    String opened;
-    String closed;
+    std::string uuid;
+    std::string order_uuid;
+    std::string exchange;
+    std::string order_type;
+    double quantity;
+    double quantity_remaining;
+    double limit;
+    double commission_paid;
+    double price;
+    std::string price_per_unit;
+    std::string opened;
+    std::string closed;
     bool cancel_initiated;
     bool immediate_or_cancel;
     bool is_conditional;
-    String condition;
-    String condition_target;
+    std::string condition;
+    std::string condition_target;
 
 };
 }

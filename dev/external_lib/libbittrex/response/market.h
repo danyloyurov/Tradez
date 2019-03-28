@@ -22,14 +22,14 @@ struct Market {
         created = j_market["Created"];
     };
 
-    String market_currency;
-    String base_currency;
-    String market_currency_long;
-    String base_currency_long;
-    Double min_trade_size;
-    String market_name;
+    std::string market_currency;
+    std::string base_currency;
+    std::string market_currency_long;
+    std::string base_currency_long;
+    double min_trade_size;
+    std::string market_name;
     bool is_active;
-    String created;
+    std::string created;
 };
 }
 }

@@ -29,19 +29,19 @@ struct OrderHistoryEntry {
 
     }
 
-    String order_uuid;
-    String exchange;
-    String time_stamp;
-    String order_type;
-    Double limit;
-    Double quantity;
-    Double quantity_remaining;
-    Double commission;
-    Double price;
-    Double price_per_unit;
+    std::string order_uuid;
+    std::string exchange;
+    std::string time_stamp;
+    std::string order_type;
+    double limit;
+    double quantity;
+    double quantity_remaining;
+    double commission;
+    double price;
+    double price_per_unit;
     bool is_conditional;
-    String condition;
-    String condition_target;
+    std::string condition;
+    std::string condition_target;
     bool immediate_or_cancel;
 
 };
