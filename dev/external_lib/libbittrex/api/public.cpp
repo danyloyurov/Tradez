@@ -5,10 +5,10 @@ using namespace bittrex::api;
 using json = nlohmann::json;
 
 
-List<response::Market> Public::get_markets() {
-    List<response::Market> markets;
+std::vector<response::Market> Public::get_markets() {
+    std::vector<response::Market> markets;
 
-    json res = dispatch("public/getmarkets/", ApiType::PUBLIC, "");
+    json res = _api_call->dispatch("public/getmarkets/", ApiType::PUBLIC, "");
 
     auto j_markets = res["result"];
     for (auto const &market:j_markets) {
@@ -18,10 +18,10 @@ List<response::Market> Public::get_markets() {
 }
 
 
-List<response::Currency> Public::get_currencies() {
-    List<response::Currency> currencies;
+std::vector<response::Currency> Public::get_currencies() {
+    std::vector<response::Currency> currencies;
 
-    json res = dispatch("public/getcurrencies/", ApiType::PUBLIC, "");
+    json res = _api_call->dispatch("public/getcurrencies/", ApiType::PUBLIC, "");
 
     auto j_currencies = res["result"];
     for (auto const &currency:j_currencies) {
@@ -32,16 +32,16 @@ List<response::Currency> Public::get_currencies() {
 
 
 response::Ticker Public::get_ticker(const string &market) {
-    json res = dispatch("public/getticker?", ApiType::PUBLIC, "market=", market);
+    json res = _api_call->dispatch("public/getticker?", ApiType::PUBLIC, "market=", market);
     auto ticker = res["result"];
     return response::Ticker(ticker);
 }
 
 
-List<response::MarketSummary> Public::get_market_summaries() {
-    List<response::MarketSummary> market_summaries;
+std::vector<response::MarketSummary> Public::get_market_summaries() {
+    std::vector<response::MarketSummary> market_summaries;
 
-    json res = dispatch("public/getmarketsummaries/", ApiType::PUBLIC, "");
+    json res = _api_call->dispatch("public/getmarketsummaries/", ApiType::PUBLIC, "");
 
     auto j_summaries = res["result"];
     for (auto const &sum:j_summaries) {
@@ -52,23 +52,23 @@ List<response::MarketSummary> Public::get_market_summaries() {
 
 
 response::MarketSummary Public::get_market_summary(const string &market) {
-    json res = dispatch("public/getmarketsummary?", ApiType::PUBLIC, "market=", market);
+    json res = _api_call->dispatch("public/getmarketsummary?", ApiType::PUBLIC, "market=", market);
     auto sum = res["result"];
     return response::MarketSummary(sum[0]);
 }
 
 
 response::OrderBook Public::get_order_book(const string &market, const string &type) {
-    json res = dispatch("public/getorderbook?", ApiType::PUBLIC, "market=", market, "type=", type);
+    json res = _api_call->dispatch("public/getorderbook?", ApiType::PUBLIC, "market=", market, "type=", type);
     auto o_book = res["result"];
     return response::OrderBook(o_book, type);
 }
 
 
-List<response::Trade> Public::get_market_history(const string &market) {
-    List<response::Trade> trades;
+std::vector<response::Trade> Public::get_market_history(const string &market) {
+    std::vector<response::Trade> trades;
 
-    json res = dispatch("public/getmarkethistory?", ApiType::PUBLIC, "market=", market);
+    json res = _api_call->dispatch("public/getmarkethistory?", ApiType::PUBLIC, "market=", market);
 
     auto market_hist = res["result"];
     for (auto const &j_trade:market_hist) {

@@ -31,7 +31,7 @@ struct Market {
     bool is_active;
     std::string created;
 };
-}
-}
+} //Namespace Response
+} //Namespace bittrex
 
 #endif //BITTREX_CPP_MARKET_H

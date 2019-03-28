@@ -3,7 +3,6 @@
 
 #include "../lib/json.hpp"
 #include "../lib/wrappers.h"
-#include <string>
 
 using json=nlohmann::json;
 using namespace bittrex::lib;
@@ -30,6 +29,6 @@ struct Trade {
     std::string fill_type;
     std::string order_type;
 };
-}
-}
+} //Namespace Response
+} //Namespace bittrex
 #endif //BITTREX_CPP_MARKET_HISTORY_H

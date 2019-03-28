@@ -7,7 +7,7 @@
 
 class BittrexPlatform : public ITradingPlatform {
     public:
-        BittrexPlatform(const std::string& public_key, const std::string& private_key);
+        BittrexPlatform(const std::string &public_key, const std::string &private_key);
         ~BittrexPlatform();
 
         virtual error::TradingError PlaceOrder(trading::Order& order) final;
