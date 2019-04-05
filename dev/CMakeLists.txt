@@ -59,6 +59,7 @@ main.cpp
 common/utilities/source/multipurpose_converter.cpp
 common/utilities/source/logger.cpp
 common/utilities/source/drawers.cpp
+common/utilities/source/crypto_helper.cpp
 trading/bot/source/trader.cpp
 trading/bot/source/orders_handler.cpp
 trading/bot/source/asset_pair_handler.cpp
