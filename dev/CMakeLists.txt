@@ -43,7 +43,8 @@ trading/bot/source/trader.cpp
 trading/bot/source/orders_handler.cpp
 trading/bot/source/asset_pair_handler.cpp
 trading/bot/source/trading_platform_observer.cpp
-trading_platforms/kraken/source/kraken_client.cpp)
+trading_platforms/kraken/source/kraken_client.cpp
+trading_platforms/kraken/source/kraken.cpp)
 
 include_directories(${DIRS})
 include_directories(${EXT_DIRS} -isystem)

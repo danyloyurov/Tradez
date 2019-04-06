@@ -3,12 +3,19 @@
 
 #include "error_interface.hpp"
 
-template<class T>
+/*
+
+* T is request structure
+
+* N is response structure
+
+*/
+template<class T, class N>
 class ClientInterface {
     public:
         virtual ~ClientInterface() {}
-        virtual error::TradingError PublicRequest(const T& request) = 0;
-        virtual error::TradingError PrivateRequest(const T& request) = 0;
+        virtual N PublicRequest(const T& request) = 0;
+        virtual N PrivateRequest(const T& request) = 0;
 };
 
 #endif // CLIENT_INTERFACE_HPP_
