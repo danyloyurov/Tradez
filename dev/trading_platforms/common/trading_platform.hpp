@@ -8,6 +8,7 @@
 
 class ITradingPlatform {
     public:
+        virtual ~ITradingPlatform() {}
         virtual error::TradingError PlaceOrder(trading::Order& order) = 0;
         virtual error::TradingError RemoveOrder(const trading::id_t& order_ID) = 0;
         virtual error::TradingError GetAssetPairs(std::vector<trading::asset_pair_t>& asset_pairs) = 0;

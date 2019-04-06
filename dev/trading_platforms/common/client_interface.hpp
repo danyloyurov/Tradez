@@ -6,8 +6,9 @@
 template<class T>
 class ClientInterface {
     public:
-      virtual error::TradingError PublicRequest(const T& request) = 0;
-      virtual error::TradingError PrivateRequest(const T& request) = 0;
+        virtual ~ClientInterface() {}
+        virtual error::TradingError PublicRequest(const T& request) = 0;
+        virtual error::TradingError PrivateRequest(const T& request) = 0;
 };
 
 #endif // CLIENT_INTERFACE_HPP_

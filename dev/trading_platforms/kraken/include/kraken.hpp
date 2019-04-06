@@ -2,7 +2,7 @@
 #define TRADING_PLATFORM_KRAKEN_HPP_
 
 #include "trading_platform.hpp"
-#include "kclient.hpp"
+#include "kraken_client.hpp"
 
 class KrakenPlatform : public ITradingPlatform {
     public:
@@ -18,9 +18,7 @@ class KrakenPlatform : public ITradingPlatform {
         virtual error::TradingError GetVolumeToBuy(const trading::asset_pair_t& pair, const trading::price_t& base_volume, trading::volume_t& crypto_volume) final;
         virtual error::TradingError GetClosedOrders(std::vector<trading::id_t>& closed_orders) final;
     private:
-        Kraken::KClient kraken_client_;
-        std::vector<Kraken::KTrade> pair_dump_;
-
+        KrakenClient kraken_client_;
 };
 
 #endif // TRADING_PLATFORM_KRAKEN_HPP_
