@@ -4,8 +4,8 @@
 namespace error {
 
 enum TradingError {
-    SUCCESS,
-    FAILED
+  SUCCESS,
+  FAILED
 };
 
 } // error

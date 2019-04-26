@@ -3,9 +3,9 @@
 
 template<class T>
 class IDrawingTool {
-    public:
-        virtual void Draw(const T& type) = 0;
-        virtual void Flush() = 0;
+  public:
+    virtual void Draw(const T& type) = 0;
+    virtual void Flush() = 0;
 };
 
 #endif // DRAWING_TOOL_HPP_

@@ -6,20 +6,20 @@
 #include <string>
 
 class Logger {
-    public:
-        static Logger& Instanse();
+  public:
+    static Logger& Instanse();
 
-        static struct File {} FileTag;
-        static struct Terminal {} TerminalTag;
+    static struct File {} FileTag;
+    static struct Terminal {} TerminalTag;
 
-        void Log(const std::string& message, File);
-        void Log(const std::string& message, Terminal);
+    void Log(const std::string& message, File);
+    void Log(const std::string& message, Terminal);
 
-        Logger(const Logger&) = delete;
-        void operator=(const Logger&) = delete;
-    private:
-        Logger();
-    
+    Logger(const Logger&) = delete;
+    void operator=(const Logger&) = delete;
+  private:
+    Logger();
+  
 };
 
 #endif // LOGGER_HPP_
