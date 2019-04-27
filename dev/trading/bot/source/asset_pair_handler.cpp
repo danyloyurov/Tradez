@@ -5,8 +5,7 @@
 
 #include <iostream>
 
-AssetPairHandler::AssetPairHandler(std::shared_ptr<ITradingPlatform> trading_platform)
-  : trading_platform_(trading_platform) {
+AssetPairHandler::AssetPairHandler() {
   pairs_count_[trading::USD] = 0;
   pairs_count_[trading::EUR] = 0;
   pairs_count_[trading::XBT] = 0;

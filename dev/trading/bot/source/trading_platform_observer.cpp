@@ -5,9 +5,8 @@
 #include <chrono>
 #include <iostream>
 
-TradingPlatformObserver::TradingPlatformObserver(std::shared_ptr<ITradingPlatform> trading_platform)
+TradingPlatformObserver::TradingPlatformObserver(std::shared_ptr<ITradingEvent> trading_platform)
   : trading_platform_(trading_platform) {
-
 }
 
 void TradingPlatformObserver::PeekEvents() {
@@ -102,7 +101,7 @@ error::TradingError TradingPlatformObserver::PeekEvents(AssetPair) {
   for(auto& pair : all_asset_pairs_) {
     trading::price_t margin = 0.0;
 
-    error_code = trading_platform_->GetCurrecyMargin(pair, trading::kDefaultTimePeriod, margin);
+    error_code = trading_platform_->GetMargin(pair, trading::kDefaultTimePeriod, margin);
 
     if(error::FAILED == error_code) {
       Logger::Instanse().Log("[TradingPlatformObserver::Error] -> Unable to get " + pair + " margin", Logger::FileTag);

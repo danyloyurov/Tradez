@@ -2,7 +2,7 @@
 #define TRADING_PLATFORM_OBSERVER_HPP_
 
 #include "trading_interface.hpp"
-#include "trading_platform.hpp"
+#include "trading_event.hpp"
 
 #include <memory>
 #include <vector>
@@ -16,7 +16,7 @@ class ITradingPlatformObserver {
 
 class TradingPlatformObserver {
   public:
-    TradingPlatformObserver(std::shared_ptr<ITradingPlatform> trading_platform);
+    TradingPlatformObserver(std::shared_ptr<ITradingEvent> trading_platform);
     void PeekEvents();
     void DispatchEvents();
 
@@ -35,7 +35,7 @@ class TradingPlatformObserver {
     std::vector<trading::id_t> cached_closed_orders_;
     std::vector<trading::asset_pair_t> high_margin_asset_pairs_;
     std::vector<trading::asset_pair_t> all_asset_pairs_;
-    std::shared_ptr<ITradingPlatform> trading_platform_;
+    std::shared_ptr<ITradingEvent> trading_platform_;
 };
 
 #endif // TRADING_PLATFORM_OBSERVER_HPP_

@@ -102,7 +102,7 @@ error::TradingError KrakenPlatform::GetAssetPairs(std::vector<trading::asset_pai
   }
 }
 
-error::TradingError KrakenPlatform::GetCurrecyMargin(const trading::asset_pair_t& pair, const int& time_period, trading::price_t& currency_margin) {
+error::TradingError KrakenPlatform::GetMargin(const trading::asset_pair_t& pair, const int& time_period, trading::price_t& currency_margin) {
   try {
     pair_dump_.clear();
     kraken_client_.trades(pair, "current", pair_dump_);
@@ -141,7 +141,7 @@ error::TradingError KrakenPlatform::GetCurrecyMargin(const trading::asset_pair_t
   }
 }
 
-error::TradingError KrakenPlatform::GetCurrecyPrice(const trading::asset_pair_t& pair, const int& time_period, trading::price_t& price) {
+error::TradingError KrakenPlatform::GetAveragePrice(const trading::asset_pair_t& pair, const int& time_period, trading::price_t& price) {
   try {
     pair_dump_.clear();
     kraken_client_.trades(pair, "current", pair_dump_);
@@ -170,6 +170,35 @@ error::TradingError KrakenPlatform::GetCurrecyPrice(const trading::asset_pair_t&
 
     return error::SUCCESS;
   } catch(...) {
+    return error::FAILED;
+  }
+}
+
+error::TradingError KrakenPlatform::GetHighestPrice(const trading::asset_pair_t& pair, const int& time_period, trading::price_t& price) {
+  try {
+    pair_dump_.clear();
+    kraken_client_.trades(pair, "current", pair_dump_);
+
+    time_t curtime;
+    time(&curtime);
+
+    trading::price_t high = 0;
+    for(auto& item : pair_dump_) {
+
+      if((curtime - item.time) < time_period) {
+
+        if(item.price > high) {
+          high = item.price;
+        }
+
+      }
+    }
+
+    price = high;
+
+    return error::SUCCESS;
+  }
+  catch(...) {
     return error::FAILED;
   }
 }

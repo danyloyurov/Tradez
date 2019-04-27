@@ -2,13 +2,13 @@
 #define BOT_TRADER_HPP_
 
 #include "trading_platform_observer.hpp"
-#include "trading_platform.hpp"
+#include "asset_interface.hpp"
 #include "orders_handler.hpp"
 #include "asset_pair_handler.hpp"
 
 class Trader : public ITradingPlatformObserver {
   public:
-    Trader(std::shared_ptr<ITradingPlatform> trading_platform);
+    Trader(std::shared_ptr<IAsset> trading_platform);
     ~Trader();
 
     void PollFailedOrders();

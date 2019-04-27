@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-OrdersHandler::OrdersHandler(std::shared_ptr<ITradingPlatform> trading_platform)
+OrdersHandler::OrdersHandler(std::shared_ptr<IAsset> trading_platform)
   : cached_order_("", 0, 0, 0, trading::BUY, trading::PricePresset(0, 0)),
     trading_platform_(trading_platform) {
   base_currency_volumes_[trading::USD] = trading::kUSDBaseBuyVolume;
@@ -64,7 +64,8 @@ error::TradingError OrdersHandler::PlaceBuyOrder(const trading::asset_pair_t& as
 
   trading::volume_t base_currency_volume = base_currency_volumes_[base_currency];
   trading::volume_t order_volume = 0.0;
-  trading::price_t price = 0.0;
+  trading::price_t median_price = 0.0;
+  trading::price_t highest_price = 0.0;
   trading::PricePresset price_presset(0,0);
 
   error_code = trading_platform_->GetPairPriceFormat(asset_pair, price_presset);
@@ -74,11 +75,25 @@ error::TradingError OrdersHandler::PlaceBuyOrder(const trading::asset_pair_t& as
     return error_code;
   }
 
-  error_code = trading_platform_->GetCurrecyPrice(asset_pair, trading::kDefaultTimePeriod, price);
+  error_code = trading_platform_->GetAveragePrice(asset_pair, trading::kDefaultTimePeriod, median_price);
 
   if(error::FAILED == error_code) {
     Logger::Instanse().Log("[OrderHandler::Error] Unable to get pair price", Logger::FileTag);
     return error_code;
+  }
+
+  error_code = trading_platform_->GetHighestPrice(asset_pair, trading::kRiskTimePeriod, highest_price);
+
+  if(error::FAILED == error_code) {
+    Logger::Instanse().Log("[OrderHandler::Error] Unable to get highest pair price", Logger::FileTag);
+    return error_code;
+  }
+
+  trading::price_t price_delta = (highest_price - median_price) /  (highest_price / 100);
+
+  if(price_delta > trading::kFailingTrend) {
+    Logger::Instanse().Log("[OrderHandler::Error] Detected failing trend", Logger::FileTag);
+    return error::FAILED;
   }
 
   error_code = trading_platform_->GetVolumeToBuy(asset_pair, base_currency_volume, order_volume);
@@ -88,9 +103,9 @@ error::TradingError OrdersHandler::PlaceBuyOrder(const trading::asset_pair_t& as
     return error_code;
   }
 
-  price = trading::price_calculator(price, trading::BUY);
+  median_price = trading::price_calculator(median_price, trading::BUY);
 
-  trading::Order buy_order(asset_pair, order_volume, price, time(NULL), trading::BUY, price_presset);
+  trading::Order buy_order(asset_pair, order_volume, median_price, time(NULL), trading::BUY, price_presset);
 
   error_code = trading_platform_->PlaceOrder(buy_order);
 

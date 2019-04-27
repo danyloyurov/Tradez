@@ -1,14 +1,14 @@
 #ifndef ORDERS_HANDLER_HPP_
 #define ORDERS_HANDLER_HPP_
 
-#include "trading_platform.hpp"
+#include "asset_interface.hpp"
 #include "asset_pair_handler.hpp"
 #include "container_helper.hpp"
 #include "drawers.hpp"
 
 class OrdersHandler {
   public:
-    OrdersHandler(std::shared_ptr<ITradingPlatform> trading_platform);
+    OrdersHandler(std::shared_ptr<IAsset> trading_platform);
     ~OrdersHandler();
 
     static struct LocalOrder {} LocalOrderTag;
@@ -28,7 +28,7 @@ class OrdersHandler {
     trading::Order cached_order_;
     std::vector<trading::Order> open_orders_;
     std::map<trading::Currency, trading::volume_t> base_currency_volumes_;
-    std::shared_ptr<ITradingPlatform> trading_platform_;
+    std::shared_ptr<IAsset> trading_platform_;
     OrdersDrawer drawer_;
 };
 
