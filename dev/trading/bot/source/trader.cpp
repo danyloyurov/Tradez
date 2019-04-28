@@ -5,7 +5,7 @@
 #include <chrono>
 #include <iostream>
 
-Trader::Trader(std::shared_ptr<IAsset> trading_platform)
+Trader::Trader(std::shared_ptr<ITradingPlatform> trading_platform)
   : orders_handler_(trading_platform) {
 }
 

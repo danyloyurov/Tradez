@@ -1,11 +1,10 @@
 #ifndef TRADING_PLATFORM_KRAKEN_HPP_
 #define TRADING_PLATFORM_KRAKEN_HPP_
 
-#include "asset_interface.hpp"
-#include "trading_event.hpp"
+#include "trading_platform.hpp"
 #include "kclient.hpp"
 
-class KrakenPlatform : public IAsset, public ITradingEvent {
+class KrakenPlatform : public ITradingPlatform {
   public:
     KrakenPlatform(const std::string& public_key, const std::string& private_key);
     ~KrakenPlatform();

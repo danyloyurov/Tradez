@@ -5,7 +5,7 @@
 #include <chrono>
 #include <iostream>
 
-TradingPlatformObserver::TradingPlatformObserver(std::shared_ptr<ITradingEvent> trading_platform)
+TradingPlatformObserver::TradingPlatformObserver(std::shared_ptr<ITradingPlatform> trading_platform)
   : trading_platform_(trading_platform) {
 }
 
@@ -109,8 +109,34 @@ error::TradingError TradingPlatformObserver::PeekEvents(AssetPair) {
     }
 
     if(trading::kPairMarginPassRate <= margin) {
+      trading::price_t median_price = 0.0;
+      trading::price_t highest_price = 0.0;
+
+      error_code = trading_platform_->GetAveragePrice(pair, trading::kDefaultTimePeriod, median_price);
+
+      if(error::FAILED == error_code) {
+        Logger::Instanse().Log("[TradingPlatformObserver::Error] Unable to get pair price", Logger::FileTag);
+        return error_code;
+      }
+
+      error_code = trading_platform_->GetHighestPrice(pair, trading::kRiskTimePeriod, highest_price);
+
+      if(error::FAILED == error_code) {
+        Logger::Instanse().Log("[TradingPlatformObserver::Error] Unable to get highest pair price", Logger::FileTag);
+        return error_code;
+      }
+
+      trading::price_t price_delta = (highest_price - median_price) /  (highest_price / 100);
+
+      if(trading::kFailingTrend <= price_delta) {
+        Logger::Instanse().Log("[TradingPlatformObserver] -> " + pair + " failing. Price delta: " + std::to_string(price_delta), Logger::FileTag);
+        continue;
+      }
+
       high_margin_asset_pairs_.push_back(pair);
-      Logger::Instanse().Log("[TradingPlatformObserver] -> " + pair + " margin: " + std::to_string(margin), Logger::FileTag);
+      Logger::Instanse().Log("[TradingPlatformObserver] -> " + pair +
+                             " margin: " + std::to_string(margin) +
+                             " price delta: " + std::to_string(price_delta), Logger::FileTag);
     }
 
     std::this_thread::sleep_for(std::chrono::seconds(trading::kPublicRequestSleep));
