@@ -10,17 +10,13 @@ class KrakenPlatform : public ITradingPlatform {
     ~KrakenPlatform();
 
     virtual error::TradingError PlaceOrder(trading::Order& order) final;
-    virtual error::TradingError RemoveOrder(const trading::id_t& order_ID) final;
-    virtual error::TradingError GetAveragePrice(const trading::asset_pair_t& pair, const int& time_period, trading::price_t& price) final;
-    virtual error::TradingError GetHighestPrice(const trading::asset_pair_t& pair, const int& time_period, trading::price_t& price) final;
-    virtual error::TradingError GetPairPriceFormat(const trading::asset_pair_t& pair, trading::PricePresset& presset) final;
-    virtual error::TradingError GetVolumeToBuy(const trading::asset_pair_t& pair, const trading::volume_t& base_volume, trading::volume_t& crypto_volume) final;
-    virtual error::TradingError GetMargin(const trading::asset_pair_t& pair, const int& time_period, trading::price_t& currency_margin) final;
+    virtual error::TradingError RemoveOrder(const trading::id_t& order_id) final;
+    virtual error::TradingError GetAssetRawDump(const trading::common::asset_pair_t& asset_pair,
+                                                std::vector<trading::analyzer::RawAsset>& raw_asset_dump) final;
     virtual error::TradingError GetAssetPairs(std::vector<trading::asset_pair_t>& asset_pairs) final;
     virtual error::TradingError GetClosedOrders(std::vector<trading::id_t>& closed_orders) final;
   private:
     Kraken::KClient kraken_client_;
-    std::vector<Kraken::KTrade> pair_dump_;
 };
 
 #endif // TRADING_PLATFORM_KRAKEN_HPP_

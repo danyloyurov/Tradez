@@ -53,7 +53,30 @@ enum Trend {
   FAILING
 };
 
+struct RawAsset {
+  RawAsset(const time_t& time,
+           const common::price_t& price,
+           const common::volume_t& volume,
+           const common::OrderType& order)
+  : time_(time),
+    price_(price),
+    volume_(volume),
+    order_(order) {}
+
+  time_t time_;
+  common::price_t price_;
+  common::volume_t volume_;
+  common::OrderType order_;
+};
+
 struct Sector {
+  Sector(const common::price_t& first_quantile,
+         const common::price_t& median,
+         const Trend& trend)
+  : first_quantile_(),
+    median_(),
+    trend_() {}
+
   common::price_t first_quantile_;
   common::price_t median_;
   Trend trend_;
