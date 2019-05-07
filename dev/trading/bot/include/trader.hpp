@@ -12,10 +12,10 @@ class Trader : public ITradingPlatformObserver {
 
     void PollFailedOrders();
 
-    virtual void NotifyOrderClosed(const trading::id_t& order_ID);
-    virtual void NotifyPairFound(const trading::asset_pair_t& asset_pair);
+    virtual void NotifyOrderClosed(const trading::common::id_t& order_ID);
+    virtual void NotifyPairFound(const trading::common::asset_pair_t& asset_pair);
   private:
-    std::list<trading::id_t> failed_sell_orders_;
+    std::list<trading::common::id_t> failed_sell_orders_;
     AssetPairHandler asset_pair_handler_;
     OrdersHandler orders_handler_;
 };

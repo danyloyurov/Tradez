@@ -10,8 +10,8 @@
 
 class ITradingPlatformObserver {
   public:
-    virtual void NotifyOrderClosed(const trading::id_t& order_ID) = 0;
-    virtual void NotifyPairFound(const trading::asset_pair_t& asset_pair) = 0;
+    virtual void NotifyOrderClosed(const trading::common::id_t& order_ID) = 0;
+    virtual void NotifyPairFound(const trading::common::asset_pair_t& asset_pair) = 0;
 };
 
 class TradingPlatformObserver {
@@ -27,14 +27,14 @@ class TradingPlatformObserver {
 
     error::TradingError PeekEvents(ClosedOrder);
     error::TradingError PeekEvents(AssetPair);
-    void BroadcastEvent(const trading::id_t& order_ID, ClosedOrder);
-    void BroadcastEvent(const trading::asset_pair_t& asset_pair, AssetPair);
+    void BroadcastEvent(const trading::common::id_t& order_ID, ClosedOrder);
+    void BroadcastEvent(const trading::common::asset_pair_t& asset_pair, AssetPair);
 
     std::list<std::shared_ptr<ITradingPlatformObserver>> subscribers_;
-    std::vector<trading::id_t> closed_orders_;
-    std::vector<trading::id_t> cached_closed_orders_;
-    std::vector<trading::asset_pair_t> high_margin_asset_pairs_;
-    std::vector<trading::asset_pair_t> all_asset_pairs_;
+    std::vector<trading::common::id_t> closed_orders_;
+    std::vector<trading::common::id_t> cached_closed_orders_;
+    std::vector<trading::common::asset_pair_t> high_margin_asset_pairs_;
+    std::vector<trading::common::asset_pair_t> all_asset_pairs_;
     std::shared_ptr<ITradingPlatform> trading_platform_;
 };
 

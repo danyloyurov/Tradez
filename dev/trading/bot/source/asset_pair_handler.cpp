@@ -6,16 +6,16 @@
 #include <iostream>
 
 AssetPairHandler::AssetPairHandler() {
-  pairs_count_[trading::USD] = 0;
-  pairs_count_[trading::EUR] = 0;
-  pairs_count_[trading::XBT] = 0;
+  pairs_count_[trading::common::USD] = 0;
+  pairs_count_[trading::common::EUR] = 0;
+  pairs_count_[trading::common::XBT] = 0;
 
-  max_pairs_count_[trading::USD] = trading::kMaxUSDPairsCount;
-  max_pairs_count_[trading::EUR] = trading::kMaxEURPairsCount;
-  max_pairs_count_[trading::XBT] = trading::kMaxXBTPairsCount;
+  max_pairs_count_[trading::common::USD] = trading::bot::kMaxUSDPairsCount;
+  max_pairs_count_[trading::common::EUR] = trading::bot::kMaxEURPairsCount;
+  max_pairs_count_[trading::common::XBT] = trading::bot::kMaxXBTPairsCount;
 }
 
-error::TradingError AssetPairHandler::AddAssetPair(const trading::asset_pair_t& asset_pair) {
+error::TradingError AssetPairHandler::AddAssetPair(const trading::common::asset_pair_t& asset_pair) {
   Logger::Instanse().Log("[AssetPairHandler] AddAssetPair -> " + asset_pair, Logger::FileTag);
 
   trading::Currency base_currency = SeparateBaseCurrency(asset_pair);
@@ -31,7 +31,7 @@ error::TradingError AssetPairHandler::AddAssetPair(const trading::asset_pair_t& 
   return error_code;
 }
 
-error::TradingError AssetPairHandler::RemovePair(const trading::asset_pair_t& asset_pair) {
+error::TradingError AssetPairHandler::RemovePair(const trading::common::asset_pair_t& asset_pair) {
   Logger::Instanse().Log("[AssetPairHandler] RemovePair -> " + asset_pair, Logger::FileTag);
 
   DecreasePairsCounter(SeparateBaseCurrency(asset_pair));
@@ -40,7 +40,7 @@ error::TradingError AssetPairHandler::RemovePair(const trading::asset_pair_t& as
   return error::SUCCESS;
 }
 
-trading::Currency AssetPairHandler::SeparateBaseCurrency(const trading::asset_pair_t& asset_pair) {
+trading::Currency AssetPairHandler::SeparateBaseCurrency(const trading::common::asset_pair_t& asset_pair) {
   Logger::Instanse().Log("[AssetPairHandler] SeparateBaseCurrency -> " + asset_pair, Logger::FileTag);
 
   for(auto& item : pairs_count_) {
@@ -54,7 +54,7 @@ trading::Currency AssetPairHandler::SeparateBaseCurrency(const trading::asset_pa
   return trading::PASS;  
 }
 
-error::TradingError AssetPairHandler::IncreasePairsCounter(const trading::Currency& currency) {
+error::TradingError AssetPairHandler::IncreasePairsCounter(const trading::common::Currency& currency) {
   Logger::Instanse().Log("[AssetPairHandler] IncreasePairsCounter -> " + std::to_string(currency), Logger::FileTag);
 
   error::TradingError error_code = error::SUCCESS;
@@ -70,7 +70,7 @@ error::TradingError AssetPairHandler::IncreasePairsCounter(const trading::Curren
   return error_code;
 }
 
-void AssetPairHandler::DecreasePairsCounter(const trading::Currency& currency) {
+void AssetPairHandler::DecreasePairsCounter(const trading::common::Currency& currency) {
   Logger::Instanse().Log("[AssetPairHandler] DecreasePairsCounter -> " + std::to_string(currency), Logger::FileTag);
 
   if(pairs_count_[currency] > 0) {

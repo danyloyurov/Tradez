@@ -61,13 +61,13 @@ void TradingPlatformObserver::SubsctibeObserver(std::shared_ptr<ITradingPlatform
   subscribers_.push_back(subscriber);
 }
 
-void TradingPlatformObserver::BroadcastEvent(const trading::id_t& order_ID, ClosedOrder) {
+void TradingPlatformObserver::BroadcastEvent(const trading::common::id_t& order_ID, ClosedOrder) {
   for(auto& item : subscribers_) {
     item->NotifyOrderClosed(order_ID);
   }
 }
 
-void TradingPlatformObserver::BroadcastEvent(const trading::asset_pair_t& asset_pair, AssetPair) {
+void TradingPlatformObserver::BroadcastEvent(const trading::common::asset_pair_t& asset_pair, AssetPair) {
   for(auto& item : subscribers_) {
     item->NotifyPairFound(asset_pair);
   }
@@ -99,7 +99,7 @@ error::TradingError TradingPlatformObserver::PeekEvents(AssetPair) {
   }
 
   for(auto& pair : all_asset_pairs_) {
-    trading::price_t margin = 0.0;
+    trading::common::price_t margin = 0.0;
 
     error_code = trading_platform_->GetMargin(pair, trading::kDefaultTimePeriod, margin);
 
@@ -109,8 +109,8 @@ error::TradingError TradingPlatformObserver::PeekEvents(AssetPair) {
     }
 
     if(trading::kPairMarginPassRate <= margin) {
-      trading::price_t median_price = 0.0;
-      trading::price_t highest_price = 0.0;
+      trading::common::price_t median_price = 0.0;
+      trading::common::price_t highest_price = 0.0;
 
       error_code = trading_platform_->GetAveragePrice(pair, trading::kDefaultTimePeriod, median_price);
 

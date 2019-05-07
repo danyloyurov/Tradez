@@ -2,29 +2,15 @@
 #define TRADING_INTERFACE_HPP_
 
 #include <string>
+#include <vector>
 #include <ctime>
 
 namespace trading {
+namespace common {
 
-static const double kPairMarginPassRate = 3.0;
-static const double kFailingTrend = 5.0;
 static const int kDefaultTimePeriod = 7200; /*seconds*/
-static const int kOrderExpirationTimePeriod = 14400; /*seconds*/
-static const int kRiskTimePeriod = 86400; /*seconds*/
 static const int kPrivateRequestSleep = 60; /*seconds*/
 static const int kPublicRequestSleep = 30; /*seconds*/
-
-static const int kMaxUSDPairsCount = 0;
-static const int kMaxEURPairsCount = 0;
-static const int kMaxXBTPairsCount = 0;
-
-static const double kUSDBaseBuyVolume = 0;
-static const double kEURBaseBuyVolume = 0;
-static const double kXBTBaseBuyVolume = 0;
-
-static const double kKrakenFee = 0.3; /*percents*/
-
-static const double kPriceMultiplier = 1.5;
 
 using id_t = std::string;
 using asset_pair_t = std::string;
@@ -46,7 +32,7 @@ enum Currency {
 struct PricePresset {
   PricePresset() {}
   PricePresset(const int& left_side_symbols_count,
-         const int& right_side_symbols_count)
+               const int& right_side_symbols_count)
   : left_side_symbols_count_(left_side_symbols_count),
     right_side_symbols_count_(right_side_symbols_count) {}
 
@@ -54,13 +40,49 @@ struct PricePresset {
   int right_side_symbols_count_;
 };
 
+} //common
+
+namespace analyzer {
+
+static const int kRiskTimePeriod = 86400; /*seconds*/
+static const double kPairMarginPassRate = 3.0;
+static const double kFailingTrend = 5.0;
+
+enum Trend {
+  GROWING,
+  FAILING
+};
+
+struct Sector {
+  common::price_t first_quantile_;
+  common::price_t median_;
+  Trend trend_;
+};
+
+} // analyzer
+
+namespace bot {
+
+static const int kOrderExpirationTimePeriod = 14400; /*seconds*/
+
+static const int kMaxUSDPairsCount = 0;
+static const int kMaxEURPairsCount = 0;
+static const int kMaxXBTPairsCount = 0;
+
+static const double kUSDBaseBuyVolume = 0;
+static const double kEURBaseBuyVolume = 0;
+static const double kXBTBaseBuyVolume = 0;
+
+static const double kTradingPlatformFee = 0.3; /*percents*/
+static const double kPriceMultiplier = 1.5;
+
 struct Order {
-  Order(const asset_pair_t& asset_pair,
-      const volume_t& volume,
-      const price_t& price,
-      const time_t& time_placed,
-      const OrderType& type,
-      const PricePresset& price_presset)
+  Order(const common::asset_pair_t& asset_pair,
+        const common::volume_t& volume,
+        const common::price_t& price,
+        const time_t& time_placed,
+        const common::OrderType& type,
+        const common::PricePresset& price_presset)
   : asset_pair_(asset_pair),
     volume_(volume),
     price_(price),
@@ -68,7 +90,7 @@ struct Order {
     type_(type),
     price_presset_(price_presset) {}
 
-  Order(const id_t& trading_patform_ID)
+  Order(const common::id_t& trading_patform_ID)
   : trading_patform_ID_(trading_patform_ID) {}
 
   const bool operator>(const Order& order) const {
@@ -91,23 +113,24 @@ struct Order {
     return this->trading_patform_ID_ == order.trading_patform_ID_;
   }
 
-  id_t trading_patform_ID_;
-  asset_pair_t asset_pair_;
-  volume_t volume_;
-  price_t price_;
+  common::id_t trading_patform_ID_;
+  common::asset_pair_t asset_pair_;
+  common::volume_t volume_;
+  common::price_t price_;
   time_t time_placed_;
-  OrderType type_;
-  PricePresset price_presset_;
+  common::OrderType type_;
+  common::PricePresset price_presset_;
 };
 
-auto price_calculator = [](const price_t& price, const OrderType& type) {
-  return BUY == type ? price - price / 100 * kPriceMultiplier : price + price / 100 * (kPriceMultiplier * 2);
+auto price_calculator = [](const common::price_t& price, const common::OrderType& type) {
+  return common::BUY == type ? price - price / 100 * kPriceMultiplier : price + price / 100 * (kPriceMultiplier * 2);
 };
 
-auto fee_calculator = [](const volume_t& volume, const volume_t& fee_percent) {
+auto fee_calculator = [](const common::volume_t& volume, const common::volume_t& fee_percent) {
   return volume - volume / 100 * fee_percent;
 };
 
+} // bot
 } // trading
 
 #endif // TRADING_INTERFACE_HPP_

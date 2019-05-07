@@ -13,15 +13,15 @@ class AssetPairHandler {
   public:
     AssetPairHandler();
 
-    error::TradingError AddAssetPair(const trading::asset_pair_t& asset_pair);
-    error::TradingError RemovePair(const trading::asset_pair_t& asset_pair);
-    trading::Currency SeparateBaseCurrency(const trading::asset_pair_t& asset_pair);
+    error::TradingError AddAssetPair(const trading::common::asset_pair_t& asset_pair);
+    error::TradingError RemovePair(const trading::common::asset_pair_t& asset_pair);
+    trading::common::Currency SeparateBaseCurrency(const trading::common::asset_pair_t& asset_pair);
   private:
-    error::TradingError IncreasePairsCounter(const trading::Currency& currency);
-    void DecreasePairsCounter(const trading::Currency& currency);
+    error::TradingError IncreasePairsCounter(const trading::common::Currency& currency);
+    void DecreasePairsCounter(const trading::common::Currency& currency);
 
-    std::map<trading::Currency, int> pairs_count_;
-    std::map<trading::Currency, int> max_pairs_count_;
+    std::map<trading::common::Currency, int> pairs_count_;
+    std::map<trading::common::Currency, int> max_pairs_count_;
     AssetPairsDrawer drawer_;
 };
 
