@@ -21,59 +21,55 @@ std::vector<trading::common::price_t> DataAnalyzer::Get24Prices(std::vector<trad
 return prices;
 }
 
-std::vector<trading::common::price_t> DataAnalyzer::GetSectorPrices(const std::vector<trading::common::price_t>& prices, int sector_num){
+std::vector<trading::common::price_t> DataAnalyzer::GetSectorPrices(const std::vector<trading::common::price_t>& prices,const int& sector_num){
     std::vector<trading::common::price_t> sector;
 
     switch(sector_num){
         case 4:{
-            for(int i=0; i < prices.size(); i++){{
-                while(i <= 6)
+            for(int i=0; i < prices.size(); i++){
+                if(i <= 6)
                     sector.push_back(prices[i]);
             }
-        }
         break;
-    }
+        }
         case 3:{
-            for(int i=0; i < prices.size(); i++){{
-                while(i >= 6 && i <= 12)
+            for(int i=0; i < prices.size(); i++){
+                if(i >= 6 && i <= 12)
                     sector.push_back(prices[i]);
             }
-        }
+
         break;
-    }
+        }
         case 2:{
-            for(int i=0; i < prices.size(); i++){{
-                while(i >= 12 && i <= 18)
+            for(int i=0; i < prices.size(); i++){
+                if(i >= 12 && i <= 18)
                     sector.push_back(prices[i]);
-            }
         }
         break;
-    }
+        }
         case 1:{
-            for(int i=0; i < prices.size(); i++){{
-                while(i >= 18 && i <= 24)
+            for(int i=0; i < prices.size(); i++){
+                if(i >= 18 && i <= 24)
                     sector.push_back(prices[i]);
-            }
         }
         break;
-    }        
-    default:
-        break;
+        }        
+        default:
+            break;
 }
     return sector;
 }
 trading::common::price_t DataAnalyzer::GetMedian(const std::vector<trading::common::price_t>& prices){
     size_t size = prices.size();
-    const uint32_t divider_with_value_two = 2;
 
     sort(prices.begin(), prices.end());
-    if (size % divider_with_value_two == 0)
+    if (size % 2 == 0)
     {
-      return (prices[size / divider_with_value_two - 1] + prices[size / divider_with_value_two]) / divider_with_value_two;
+      return (prices[size / 2 - 1] + prices[size / 2]) / 2;
     }
     else 
     {
-      return prices[size / divider_with_value_two];
+      return prices[size / 2];
     }
 }
 
@@ -91,10 +87,10 @@ trading::analyzer::Trend DataAnalyzer::IsTrendGrowing(const std::vector<trading:
     int less_counter = 0;
 
     for (auto price : prices){
-        if(price > prices[24])
+        if(price > prices[6])
             more_counter += 1;
 
-        else if(price < prices[24])
+        else if(price < prices[6])
             less_counter += 1;
     }
 
