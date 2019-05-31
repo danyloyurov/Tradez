@@ -11,24 +11,11 @@
 
 class DataAnalyzer {
   public:
-    std::vector<trading::common::price_t> get_12hour_prices_(std::vector<trading::analyzer::RawAsset> raw_asset_dump);
-    trading::common::price_t get_median_(std::vector<trading::common::price_t> prices_);
-    trading::common::price_t get_first_quartile_(std::vector<trading::common::price_t> prices_);
-    bool is_trend_growing(std::vector<trading::common::price_t> prices_);
-};
+    std::vector<trading::common::price_t> Get24Prices(std::vector<trading::analyzer::RawAsset> raw_asset_dump);
+    std::vector<trading::common::price_t> GetSectorPrices(std::vector<trading::common::price_t> prices_, int sector);
+    trading::common::price_t GetMedian(std::vector<trading::common::price_t> prices_);
+    trading::common::price_t GetFirstQuantile(std::vector<trading::common::price_t> prices_);
+    bool IsTrendGrowing(std::vector<trading::common::price_t> prices_);
+    };
 
 #endif // DATA_ANALYZER_HPP_
-
-
-
-
-
-
-
-
-
-
-
-
-
-
