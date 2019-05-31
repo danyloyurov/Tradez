@@ -3,11 +3,11 @@
 error::TradingError GetAssetData(const trading::common::asset_pair_t& asset_pair, std::vector<trading::analyzer::Sector>& asset_data){
     std::vector<trading::analyzer::RawAsset> raw_asset_dump_;
     trading_platform_.GetAssetRawDump(asset_pair, raw_asset_dump_);
-    std::vector<trading::common::price_t> prices_ = data_analyzer_.Get24Prices(raw_asset_dump_);
-    std::vector<trading::common::price_t> first_sector = data_analyzer_.GetSectorPrices(prices_, 1);
-    std::vector<trading::common::price_t> second_sector = data_analyzer_.GetSectorPrices(prices_, 2);
-    std::vector<trading::common::price_t> third_sector = data_analyzer_.GetSectorPrices(prices_, 3);
-    std::vector<trading::common::price_t> fourth_sector = data_analyzer_.GetSectorPrices(prices_, 4);
+    std::vector<trading::common::price_t> prices = data_analyzer_.Get24Prices(raw_asset_dump_);
+    std::vector<trading::common::price_t> first_sector = data_analyzer_.GetSectorPrices(prices, 1);
+    std::vector<trading::common::price_t> second_sector = data_analyzer_.GetSectorPrices(prices, 2);
+    std::vector<trading::common::price_t> third_sector = data_analyzer_.GetSectorPrices(prices, 3);
+    std::vector<trading::common::price_t> fourth_sector = data_analyzer_.GetSectorPrices(prices, 4);
 
 
     asset_data[0].median_ = data_analyzer_.GetMedian(first_sector);
