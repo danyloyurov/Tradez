@@ -50,7 +50,7 @@ static const double kFailingTrend = 5.0;
 
 enum Trend {
   GROWING,
-  FAILING
+  FALLING
 };
 
 struct RawAsset {

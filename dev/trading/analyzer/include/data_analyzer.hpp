@@ -15,7 +15,7 @@ class DataAnalyzer {
     std::vector<trading::common::price_t> GetSectorPrices(std::vector<trading::common::price_t> prices_, int sector);
     trading::common::price_t GetMedian(std::vector<trading::common::price_t> prices_);
     trading::common::price_t GetFirstQuantile(std::vector<trading::common::price_t> prices_);
-    bool IsTrendGrowing(std::vector<trading::common::price_t> prices_);
+    trading::analyzer::Trend IsTrendGrowing(std::vector<trading::common::price_t> prices_);
     };
 
 #endif // DATA_ANALYZER_HPP_
