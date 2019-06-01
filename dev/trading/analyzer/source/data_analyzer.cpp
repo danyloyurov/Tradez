@@ -1,6 +1,6 @@
 #include "data_analyzer.hpp"
 
-std::vector<trading::common::price_t> DataAnalyzer::Get24Prices(std::vector<trading::analyzer::RawAsset>& raw_asset_dump){
+std::vector<trading::common::price_t> DataAnalyzer::Get24Prices(const std::vector<trading::analyzer::RawAsset>& raw_asset_dump){
     time_t current_time = time(NULL);
     const time_t twelve_hours_and_a_half = 45000;
     const time_t half_an_hour = 1800;
@@ -26,40 +26,32 @@ std::vector<trading::common::price_t> DataAnalyzer::GetSectorPrices(const std::v
 
     switch(sector_num) {
       case 4: {
-        for (int i=0; i < prices.size(); i++) {
-          if (i <= 6) {
+        for (int i = 0; i <= 6; i++) {
             sector.push_back(prices[i]);
           }
-        }
           break;
-        }
-        case 3: {
-          for (int i=0; i < prices.size(); i++) {
-            if (i >= 6 && i <= 12) {
+      }
+      case 3: {
+          for (int i = 6; i <= 12; i++) {
               sector.push_back(prices[i]);
             }
-          }
           break;
         }
-        case 2: {
-          for (int i=0; i < prices.size(); i++) {
-            if (i >= 12 && i <= 18) {
+      case 2: {
+          for (int i = 12; i <= 18; i++) {
               sector.push_back(prices[i]);
             }
-          }
           break;
         }
-        case 1: {
-          for (int i=0; i < prices.size(); i++) {
-            if (i >= 18 && i <= 24) {
-              sector.push_back(prices[i]);
-            }
-          }
-          break;
-        }        
-        default: {
-          break;
+      case 1: {
+        for (int i = 18; i <= 24; i++) {
+            sector.push_back(prices[i]);
         }
+        break;
+        }
+      default: {
+        break;
+      }
 }
     return sector;
 }
@@ -85,17 +77,21 @@ trading::common::price_t DataAnalyzer::GetFirstQuantile(const std::vector<tradin
 }
 
 trading::analyzer::Trend DataAnalyzer::IsTrendGrowing(const std::vector<trading::common::price_t>& prices){
-    int more_counter = 0;
-    int less_counter = 0;
+    std::vector<double> percents;
+    float sum_of_elems = 0;
 
-    for (auto price : prices) {
-      if (price > prices[6]) {
-        more_counter += 1;
+    for (auto i = prices.size(); i >= 0; --i) {
+      if (i > 0) {
+        percents.push_back((prices[i - 1] - prices[i]) / prices[i] * 100);
       } else {
-        less_counter += 1;
+        percents.push_back((prices[i] - prices[i + 1]) / prices[i] * 100);
       }
+
+    for (auto e : percents) {
+        sum_of_elems += e;
     }
-    if (more_counter > less_counter) {
+
+    if (sum_of_elems > 0) {
       return trading::analyzer::GROWING;
     } else {
       return trading::analyzer::FALLING;
