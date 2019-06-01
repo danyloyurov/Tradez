@@ -1,5 +1,9 @@
 #include "data_grabber.hpp"
 
+DataGrabber::DataGrabber(std::shared_ptr<ITradingPlatform> trading_platform){
+  std::shared_ptr<ITradingPlatform> trading_platform_ = trading_platform;
+}
+
 error::TradingError GetAssetData(const trading::common::asset_pair_t& asset_pair, std::vector<trading::analyzer::Sector>& asset_data){
     std::vector<trading::analyzer::RawAsset> raw_asset_dump_;
     trading_platform_.GetAssetRawDump(asset_pair, raw_asset_dump_);

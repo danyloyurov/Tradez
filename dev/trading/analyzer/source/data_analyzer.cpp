@@ -10,47 +10,51 @@ std::vector<trading::common::price_t> DataAnalyzer::Get24Prices(std::vector<trad
 
     std::vector<trading::common::price_t> prices;
 
-    while(first_mark>=bottom_line){
-      for(auto asset : raw_asset_dump){
-        if(asset.time_ >= first_mark - boundary_for_step && asset.time_<= first_mark + boundary_for_step){
+    while (first_mark>=bottom_line) {
+      for (auto asset : raw_asset_dump) {
+        if (asset.time_ >= first_mark - boundary_for_step && asset.time_<= first_mark + boundary_for_step) {
           prices.push_back(asset.price_);
           first_mark -= half_an_hour;
         }
       }
     }
-return prices;
+    return prices;
 }
 
 std::vector<trading::common::price_t> DataAnalyzer::GetSectorPrices(const std::vector<trading::common::price_t>& prices,const int& sector_num){
     std::vector<trading::common::price_t> sector;
 
-    switch(sector_num){
-      case 4:{
-        for(int i=0; i < prices.size(); i++){
-          if(i <= 6)
+    switch(sector_num) {
+      case 4: {
+        for (int i=0; i < prices.size(); i++) {
+          if (i <= 6) {
             sector.push_back(prices[i]);
+          }
         }
           break;
         }
-        case 3:{
-          for(int i=0; i < prices.size(); i++){
-            if(i >= 6 && i <= 12)
+        case 3: {
+          for (int i=0; i < prices.size(); i++) {
+            if (i >= 6 && i <= 12) {
               sector.push_back(prices[i]);
-        }
+            }
+          }
           break;
         }
-        case 2:{
-          for(int i=0; i < prices.size(); i++){
-            if(i >= 12 && i <= 18)
+        case 2: {
+          for (int i=0; i < prices.size(); i++) {
+            if (i >= 12 && i <= 18) {
               sector.push_back(prices[i]);
-        }
+            }
+          }
           break;
         }
-        case 1:{
-          for(int i=0; i < prices.size(); i++){
-            if(i >= 18 && i <= 24)
+        case 1: {
+          for (int i=0; i < prices.size(); i++) {
+            if (i >= 18 && i <= 24) {
               sector.push_back(prices[i]);
-        }
+            }
+          }
           break;
         }        
         default:
@@ -62,17 +66,20 @@ trading::common::price_t DataAnalyzer::GetMedian(const std::vector<trading::comm
     size_t size = prices.size();
 
     sort(prices.begin(), prices.end());
-    if (size % 2 == 0)
+    if (size % 2 == 0) {
       return (prices[size / 2 - 1] + prices[size / 2]) / 2;
-    else 
+    }
+    else { 
       return prices[size / 2];
+    }
 }
 
 trading::common::price_t DataAnalyzer::GetFirstQuantile(const std::vector<trading::common::price_t>& prices){
     sort(prices.begin(), prices.end());
     trading::common::price_t sum_of_prices = 0.0;
-    for (auto n : prices)
+    for (auto n : prices) {
       sum_of_prices += n;
+    }
 
     return (sum_of_prices + 1) / 4;
 }
@@ -81,16 +88,18 @@ trading::analyzer::Trend DataAnalyzer::IsTrendGrowing(const std::vector<trading:
     int more_counter = 0;
     int less_counter = 0;
 
-    for (auto price : prices){
-      if(price > prices[6])
+    for (auto price : prices) {
+      if (price > prices[6]) {
         more_counter += 1;
-
-      else if(price < prices[6])
+      }
+      else {
         less_counter += 1;
+      }
     }
-
-    if (more_counter > less_counter)
+    if (more_counter > less_counter) {
       return trading::analyzer::GROWING;
-    else
+    }
+    else {
       return trading::analyzer::FALLING;
+    }
 }
