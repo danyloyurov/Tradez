@@ -1,6 +1,6 @@
 #include "data_analyzer.hpp"
 
-std::vector<trading::common::price_t> DataAnalyzer::Get24Prices(std::vector<trading::analyzer::RawAsset> raw_asset_dump){
+std::vector<trading::common::price_t> DataAnalyzer::Get24Prices(std::vector<trading::analyzer::RawAsset>& raw_asset_dump){
     time_t current_time = time(NULL);
     const time_t twelve_hours_and_a_half = 45000;
     const time_t half_an_hour = 1800;
@@ -57,8 +57,9 @@ std::vector<trading::common::price_t> DataAnalyzer::GetSectorPrices(const std::v
           }
           break;
         }        
-        default:
+        default: {
           break;
+        }
 }
     return sector;
 }
@@ -68,8 +69,7 @@ trading::common::price_t DataAnalyzer::GetMedian(const std::vector<trading::comm
     sort(prices.begin(), prices.end());
     if (size % 2 == 0) {
       return (prices[size / 2 - 1] + prices[size / 2]) / 2;
-    }
-    else { 
+    } else { 
       return prices[size / 2];
     }
 }
@@ -91,15 +91,13 @@ trading::analyzer::Trend DataAnalyzer::IsTrendGrowing(const std::vector<trading:
     for (auto price : prices) {
       if (price > prices[6]) {
         more_counter += 1;
-      }
-      else {
+      } else {
         less_counter += 1;
       }
     }
     if (more_counter > less_counter) {
       return trading::analyzer::GROWING;
-    }
-    else {
+    } else {
       return trading::analyzer::FALLING;
     }
 }
