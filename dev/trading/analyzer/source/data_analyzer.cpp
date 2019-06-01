@@ -36,19 +36,19 @@ std::vector<trading::common::price_t> DataAnalyzer::GetSectorPrices(const std::v
               sector.push_back(prices[i]);
             }
           break;
-        }
+      }
       case 2: {
           for (int i = 12; i <= 18; i++) {
               sector.push_back(prices[i]);
             }
           break;
-        }
+      }
       case 1: {
         for (int i = 18; i <= 24; i++) {
             sector.push_back(prices[i]);
         }
         break;
-        }
+      }
       default: {
         break;
       }
@@ -69,8 +69,8 @@ trading::common::price_t DataAnalyzer::GetMedian(const std::vector<trading::comm
 trading::common::price_t DataAnalyzer::GetFirstQuantile(const std::vector<trading::common::price_t>& prices){
     sort(prices.begin(), prices.end());
     trading::common::price_t sum_of_prices = 0.0;
-    for (auto n : prices) {
-      sum_of_prices += n;
+    for (auto price : prices) {
+      sum_of_prices += price;
     }
 
     return (sum_of_prices + 1) / 4;
@@ -78,7 +78,7 @@ trading::common::price_t DataAnalyzer::GetFirstQuantile(const std::vector<tradin
 
 trading::analyzer::Trend DataAnalyzer::IsTrendGrowing(const std::vector<trading::common::price_t>& prices){
     std::vector<double> percents;
-    float sum_of_elems = 0;
+    float sum_of_percents = 0;
 
     for (auto i = prices.size(); i >= 0; --i) {
       if (i > 0) {
@@ -87,11 +87,11 @@ trading::analyzer::Trend DataAnalyzer::IsTrendGrowing(const std::vector<trading:
         percents.push_back((prices[i] - prices[i + 1]) / prices[i] * 100);
       }
 
-    for (auto e : percents) {
-        sum_of_elems += e;
+    for (auto percent : percents) {
+        sum_of_percents += percent;
     }
 
-    if (sum_of_elems > 0) {
+    if (static_cast<int>(sum_of_percents) > 0) {
       return trading::analyzer::GROWING;
     } else {
       return trading::analyzer::FALLING;
