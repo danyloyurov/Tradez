@@ -18,6 +18,6 @@ class DataAnalyzer {
     trading::common::price_t GetMedian(const std::vector<trading::common::price_t>& prices);
     trading::common::price_t GetFirstQuantile(const std::vector<trading::common::price_t>& prices);
     trading::analyzer::Trend IsTrendGrowing(const std::vector<trading::common::price_t>& prices);
-    };
+};
 
 #endif // DATA_ANALYZER_HPP_
