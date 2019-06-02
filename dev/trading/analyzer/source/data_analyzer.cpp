@@ -55,7 +55,7 @@ std::vector<trading::common::price_t> DataAnalyzer::GetSectorPrices(const std::v
 }
     return sector;
 }
-trading::common::price_t DataAnalyzer::GetMedian(const std::vector<trading::common::price_t>& prices){
+trading::common::price_t DataAnalyzer::GetMedian(std::vector<trading::common::price_t> prices){
   size_t size = prices.size();
 
   std::sort(prices.begin(), prices.end());
@@ -66,7 +66,7 @@ trading::common::price_t DataAnalyzer::GetMedian(const std::vector<trading::comm
   }
 }
 
-trading::common::price_t DataAnalyzer::GetFirstQuantile(const std::vector<trading::common::price_t>& prices){
+trading::common::price_t DataAnalyzer::GetFirstQuantile(std::vector<trading::common::price_t> prices){
   std::sort(prices.begin(), prices.end());
   trading::common::price_t sum_of_prices = 0.0;
   for (auto price : prices) {
