@@ -80,12 +80,9 @@ trading::analyzer::Trend DataAnalyzer::IsTrendGrowing(const std::vector<trading:
     std::vector<double> percents;
     float sum_of_percents = 0;
 
-    for (auto i = prices.size(); i >= 0; --i) {
-      if (i > 0) {
+    for (auto i = prices.size() - 1; i > 0; --i) {
         percents.push_back((prices[i - 1] - prices[i]) / prices[i] * 100);
-      } else {
-        percents.push_back((prices[i] - prices[i + 1]) / prices[i] * 100);
-      }
+    }
 
     for (auto percent : percents) {
         sum_of_percents += percent;
