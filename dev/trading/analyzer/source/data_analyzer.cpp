@@ -1,4 +1,11 @@
 #include "data_analyzer.hpp"
+#include <ctime>
+#include <algorithm>
+#include <memory>
+
+DataAnalyzer::DataAnalyzer(std::map<int, std::pair<int, int> > sectors)
+     : sectors_(sectors){}
+
 
 std::vector<trading::common::price_t> DataAnalyzer::Get24Prices(const std::vector<trading::analyzer::RawAsset>& raw_asset_dump){
   time_t current_time = time(NULL);
@@ -25,7 +32,7 @@ std::vector<trading::common::price_t> DataAnalyzer::GetSectorPrices(const std::v
   std::vector<trading::common::price_t> sector;
   auto range =  sectors_.at(sector_num);
 
-  sector.assign(prices.begin() + std::get<0>(range), prices.begin() + std::get<1>(range)+1);
+  sector.assign(prices.begin() + range.first, prices.begin() + range.second + 1);
 
   return sector;
 }
