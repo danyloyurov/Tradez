@@ -23,7 +23,7 @@ std::vector<trading::common::price_t> DataAnalyzer::Get24Prices(const std::vecto
 
 std::vector<trading::common::price_t> DataAnalyzer::GetSectorPrices(const std::vector<trading::common::price_t>& prices,const int& sector_num){
   std::vector<trading::common::price_t> sector;
-  auto range =  sectors_[sector_num];
+  auto range =  sectors_.at(sector_num);
 
   sector.assign(prices.begin() + std::get<0>(range), prices.begin() + std::get<1>(range)+1);
 
