@@ -23,38 +23,13 @@ std::vector<trading::common::price_t> DataAnalyzer::Get24Prices(const std::vecto
 
 std::vector<trading::common::price_t> DataAnalyzer::GetSectorPrices(const std::vector<trading::common::price_t>& prices,const int& sector_num){
   std::vector<trading::common::price_t> sector;
+  auto range =  sectors_[sector_num];
 
-  switch(sector_num) {
-    case 4: {
-      for (int i = 0; i <= 6; i++) {
-          sector.push_back(prices[i]);
-        }
-    break;
-    }
-    case 3: {
-        for (int i = 6; i <= 12; i++) {
-            sector.push_back(prices[i]);
-          }
-    break;
-    }
-    case 2: {
-        for (int i = 12; i <= 18; i++) {
-            sector.push_back(prices[i]);
-          }
-    break;
-    }
-    case 1: {
-      for (int i = 18; i <= 24; i++) {
-          sector.push_back(prices[i]);
-      }
-      break;
-      }
-    default: {
-      break;
-    }
+  sector.assign(prices.begin() + std::get<0>(range), prices.begin() + std::get<1>(range)+1);
+
+  return sector;
 }
-    return sector;
-}
+
 trading::common::price_t DataAnalyzer::GetMedian(std::vector<trading::common::price_t> prices){
   size_t size = prices.size();
 

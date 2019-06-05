@@ -5,6 +5,8 @@
 #include <vector>
 #include <ctime>
 #include <algorithm>
+#include <map>
+#include <utility>
 
 #include "error_interface.hpp"
 #include "trading_platform.hpp"
@@ -18,6 +20,11 @@ class DataAnalyzer {
     trading::common::price_t GetMedian(std::vector<trading::common::price_t> prices);
     trading::common::price_t GetFirstQuantile(std::vector<trading::common::price_t> prices);
     trading::analyzer::Trend IsTrendGrowing(const std::vector<trading::common::price_t>& prices);
+
+    std::map<int, std::pair<int, int> > sectors_ = {{1, {18, 24}},
+                                                    {2, {12, 18}},
+                                                    {3, {6, 12}},
+                                                    {4, {0,6}}};
 };
 
 #endif // DATA_ANALYZER_HPP_
