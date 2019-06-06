@@ -3,7 +3,10 @@
 #include <algorithm>
 #include <memory>
 
-DataAnalyzer::DataAnalyzer(std::map<int, std::pair<int, int> > sectors)
+DataAnalyzer::DataAnalyzer(const std::map<int, std::pair<int, int> > sectors = {{1, {18, 24}},
+                                                                                {2, {12, 18}},
+                                                                                {3, {6, 12}},
+                                                                                {4, {0,6}}})
      : sectors_(sectors){}
 
 

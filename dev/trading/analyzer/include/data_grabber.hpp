@@ -10,7 +10,7 @@
 
 class DataGrabber {
   public:
-    DataGrabber(std::shared_ptr<ITradingPlatform> trading_platform, std::map<int, std::pair<int, int> > sectors);
+    DataGrabber(std::shared_ptr<ITradingPlatform> trading_platform);
 
     error::TradingError GetAssetData(const trading::common::asset_pair_t& asset_pair, std::vector<trading::analyzer::Sector>& asset_data);
   private:

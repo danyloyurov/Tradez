@@ -10,7 +10,7 @@
 
 class DataAnalyzer {
   public:
-    DataAnalyzer(std::map<int, std::pair<int, int> > sectors);
+    DataAnalyzer(const std::map<int, std::pair<int, int> > sectors);
 
     std::vector<trading::common::price_t> Get24Prices(const std::vector<trading::analyzer::RawAsset>& raw_asset_dump);
     std::vector<trading::common::price_t> GetSectorPrices(const std::vector<trading::common::price_t>& prices, const int& sector);

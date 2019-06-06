@@ -1,7 +1,7 @@
 #include "data_grabber.hpp"
 
-DataGrabber::DataGrabber(std::shared_ptr<ITradingPlatform> trading_platform, std::map<int, std::pair<int, int> > sectors)
-    : trading_platform_(trading_platform), data_analyzer_(sectors){}
+DataGrabber::DataGrabber(std::shared_ptr<ITradingPlatform> trading_platform)
+    : trading_platform_(trading_platform){}
 
 
 error::TradingError GetAssetData(const trading::common::asset_pair_t& asset_pair, std::vector<trading::analyzer::Sector>& asset_data){
