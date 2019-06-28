@@ -21,7 +21,7 @@ void Logger::Log(const std::string& message, File) {
   time(&raw_time);
   timestamp = localtime(&raw_time);
 
-  if(true == log_file.is_open()) {
+  if(true == log_file.is_open() && timestamp != nullptr) {
     log_file << "[" << timestamp->tm_hour << ":"
           << timestamp->tm_min << ":"
           << timestamp->tm_sec << "] "
@@ -37,9 +37,11 @@ void Logger::Log(const std::string& message, Terminal) {
   time(&raw_time);
   timestamp = localtime(&raw_time);
 
-  std::cout << "[" << timestamp->tm_hour << ":"
-        << timestamp->tm_min << ":"
-        << timestamp->tm_sec << "] "
-        <<  message << std::endl;
+  if(timestamp != nullptr) {
+    std::cout << "[" << timestamp->tm_hour << ":"
+          << timestamp->tm_min << ":"
+          << timestamp->tm_sec << "] "
+          <<  message << std::endl;
+  }
 }
 
